@@ -12,7 +12,14 @@ builder.Services.AddControllers()
 
 // Configuring Swagger/OpenAPI
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo 
+    { 
+        Title = "Lipometry API", 
+        Version = "v1" 
+    });
+});
 
 // Add a DbContext here
 builder.Services.AddDbContext<LipometryContext>();
@@ -29,7 +36,11 @@ contect.Database.EnsureCreated();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Lipometry API v1");
+        c.RoutePrefix = string.Empty; // Serve Swagger UI at root path
+    });
 }
 
 app.UseHttpsRedirection();

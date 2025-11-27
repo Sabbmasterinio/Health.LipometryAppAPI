@@ -1,8 +1,8 @@
 ﻿namespace LipometryAppAPI.Models
 {
-    public class Person
+    public class Athlete
     {
-        public int PersonId { get; init; }
+        public int AthleteId { get; init; }
         public string FirstName { get; set; } = string.Empty;
         public string LastName { get; set; } = string.Empty;
         public DateOnly DateOfBirth { get; init; }
@@ -23,5 +23,7 @@
         }
         public PersonGender PersonGender { get; init; } = PersonGender.Male;
 
+        // The exrra fields
+        public string Sport { get; set; } = string.Empty;
     }
 }

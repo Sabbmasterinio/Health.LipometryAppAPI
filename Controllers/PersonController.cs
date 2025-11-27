@@ -23,7 +23,7 @@ namespace LipometryAppAPI.Controllers
         [ProducesResponseType(typeof(List<Person>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.People.Include(p => p.BodyDetails).ToListAsync());
+            return Ok(await _context.People.ToListAsync());
         }
 
 
@@ -72,8 +72,11 @@ namespace LipometryAppAPI.Controllers
 
             existingPerson.FirstName= person.FirstName;
             existingPerson.LastName= person.LastName;
-            existingPerson.DateOfBirth= person.DateOfBirth;
-            //existingPerson.BodyDetails = person.BodyDetails;
+            existingPerson.HeightInCm = person.HeightInCm;
+            existingPerson.WeightInKg = person.WeightInKg;
+            existingPerson.WaistInCm = person.WaistInCm;
+            existingPerson.HipInCm = person.HipInCm;
+            existingPerson.NeckInCm = person.NeckInCm;
 
             await _context.SaveChangesAsync();
             return Ok(existingPerson);

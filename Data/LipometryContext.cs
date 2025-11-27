@@ -6,8 +6,8 @@ namespace LipometryAppAPI.Data
 {
     public class LipometryContext : DbContext
     {
-        public DbSet<PersonBodyDetails> BodyDetails => Set<PersonBodyDetails>();
         public DbSet<Person> People => Set<Person>();
+        public DbSet<Athlete> Athlete => Set<Athlete>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -19,8 +19,8 @@ namespace LipometryAppAPI.Data
 
         override protected void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration(new PersonBodyDetailsMapping());
             modelBuilder.ApplyConfiguration(new PersonMapping());
+            modelBuilder.ApplyConfiguration(new AthleteMapping());
         }
     }
 }
