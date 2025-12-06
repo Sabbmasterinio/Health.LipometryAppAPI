@@ -1,4 +1,6 @@
 using LipometryAppAPI.Data;
+using LipometryAppAPI.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,15 +24,20 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // Add a DbContext here
+//builder.Services.AddDbContext<LipometryContext>();
+
 builder.Services.AddDbContext<LipometryContext>();
+
+builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+builder.Services.AddScoped<IAthleteRepository, AthleteRepository>();
 
 var app = builder.Build();
 
-//fix in future
-var scope = app.Services.CreateScope();
-var contect = scope.ServiceProvider.GetRequiredService<LipometryContext>();
-contect.Database.EnsureDeleted();
-contect.Database.EnsureCreated();
+////fix in future
+//var scope = app.Services.CreateScope();
+//var contect = scope.ServiceProvider.GetRequiredService<LipometryContext>();
+//contect.Database.EnsureDeleted();
+//contect.Database.EnsureCreated();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

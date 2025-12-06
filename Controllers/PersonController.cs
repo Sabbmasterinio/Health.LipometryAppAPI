@@ -1,5 +1,6 @@
 ﻿using LipometryAppAPI.Data;
 using LipometryAppAPI.Models;
+using LipometryAppAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,11 +10,10 @@ namespace LipometryAppAPI.Controllers
     [Route("[controller]")]
     public class PersonController : Controller
     {
-        private readonly LipometryContext _context;
-
-        public PersonController(LipometryContext context)
+        private readonly IPersonRepository _personRepository;
+        public PersonController(IPersonRepository personRepository)
         {
-            _context = context;
+            _personRepository = personRepository;
         }
 
         /// <summary>
@@ -23,7 +23,8 @@ namespace LipometryAppAPI.Controllers
         [ProducesResponseType(typeof(List<Person>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.People.ToListAsync());
+            var people = await _personRepository.GetAllAsync();
+            return Ok(people);
         }
 
 
@@ -36,9 +37,7 @@ namespace LipometryAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
-            var person = await _context.People
-                .SingleOrDefaultAsync(p => p.PersonId == id);
-
+            var person = await _personRepository.GetByIdAsync(id);
             return person is null ? NotFound() : Ok(person);
         }
 
@@ -50,9 +49,11 @@ namespace LipometryAppAPI.Controllers
         [ProducesResponseType(typeof(Person), StatusCodes.Status201Created)]
         public async Task<IActionResult> Create([FromBody] Person person)
         {
-            await _context.People.AddAsync(person);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = person.PersonId }, person);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var createdPerson = await _personRepository.AddAsync(person);
+            return CreatedAtAction(nameof(Get), new { id = createdPerson.PersonId }, createdPerson);
         }
 
         /// <summary>
@@ -65,21 +66,21 @@ namespace LipometryAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] Person person)
         {
-            var existingPerson = await _context.People.FindAsync(id);
-
+            var existingPerson = await _personRepository.GetByIdAsync(id);
             if (existingPerson is null)
                 return NotFound();
 
-            existingPerson.FirstName= person.FirstName;
-            existingPerson.LastName= person.LastName;
+            existingPerson.FirstName = person.FirstName;
+            existingPerson.LastName = person.LastName;
             existingPerson.HeightInCm = person.HeightInCm;
             existingPerson.WeightInKg = person.WeightInKg;
             existingPerson.WaistInCm = person.WaistInCm;
             existingPerson.HipInCm = person.HipInCm;
             existingPerson.NeckInCm = person.NeckInCm;
 
-            await _context.SaveChangesAsync();
-            return Ok(existingPerson);
+            await _personRepository.UpdateAsync(existingPerson);
+            return NoContent();
+
         }
 
         /// <summary>
@@ -91,13 +92,10 @@ namespace LipometryAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remove([FromRoute] int id)
         {
-            var existingPerson = await _context.People.FindAsync(id);
-
-            if (existingPerson is null)
+            if (!await _personRepository.ExistsAsync(id))
                 return NotFound();
 
-            _context.People.Remove(existingPerson);
-            await _context.SaveChangesAsync();
+            await _personRepository.DeleteAsync(id);
             return Ok();
         }
     }

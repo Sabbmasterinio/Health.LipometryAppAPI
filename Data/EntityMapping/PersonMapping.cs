@@ -8,26 +8,7 @@ namespace LipometryAppAPI.Data.EntityMapping
     {
         public void Configure(EntityTypeBuilder<Person> builder)
         {
-            //builder.OwnsOne(p => p.BodyDetails)
-            //    .HasData(new {
-            //        PersonId = 1,
-            //        WeightInKg = 75.0,
-            //        HeightInCm = 180.0,
-            //        WaistInCm = 100.0,
-            //        HipInCm = 90.0,
-            //        NeckInCm = 40.0
-            //    });
-
-            //builder.ComplexProperty(p => p.BodyDetails)
-            //    .IsRequired();
-
             builder.HasKey(p => p.PersonId);
-            
-            //builder.HasOne(p => p.BodyDetails)
-            //    .WithOne(bd => bd.Person)
-            //    .HasPrincipalKey<PersonBodyDetails>(bd => bd.Id)
-            //    .HasForeignKey<Person>(p => p.BodyDetailsId)
-            //    .IsRequired(false);
 
             builder.HasData(
                 new Person
