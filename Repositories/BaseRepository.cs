@@ -1,5 +1,4 @@
-﻿// BaseRepository.cs
-using LipometryAppAPI.Data;
+﻿using LipometryAppAPI.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace LipometryAppAPI.Repositories

@@ -5,7 +5,11 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Load configuration
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
+
+// Add services to the container
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -16,41 +20,101 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo 
-    { 
-        Title = "Lipometry API", 
-        Version = "v1" 
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "Lipometry API",
+        Version = "v1"
     });
 });
 
-// Add a DbContext here
-//builder.Services.AddDbContext<LipometryContext>();
+// Add authorization services
+builder.Services.AddAuthorization();
 
-builder.Services.AddDbContext<LipometryContext>();
+// Get connection string
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+if (string.IsNullOrEmpty(connectionString))
+{
+    // Fallback for development
+    connectionString = "Server=localhost;Database=LipometryDB;Trusted_Connection=True;TrustServerCertificate=True;";
+}
 
+// Add DbContext with configuration
+builder.Services.AddDbContext<LipometryContext>(options =>
+{
+    options.UseSqlServer(connectionString);
+
+    // Enable sensitive data logging only in development
+    if (builder.Environment.IsDevelopment())
+    {
+        options.EnableSensitiveDataLogging();
+        options.LogTo(Console.WriteLine, LogLevel.Information);
+    }
+});
+
+// Register repositories
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IAthleteRepository, AthleteRepository>();
 
 var app = builder.Build();
 
-////fix in future
-//var scope = app.Services.CreateScope();
-//var contect = scope.ServiceProvider.GetRequiredService<LipometryContext>();
-//contect.Database.EnsureDeleted();
-//contect.Database.EnsureCreated();
-
-// Configure the HTTP request pipeline.
+// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
+    // Database setup for development
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<LipometryContext>();
+
+        try
+        {
+            // Delete and recreate for clean development (optional)
+            //context.Database.EnsureDeleted();
+
+            context.Database.EnsureCreated();
+
+            // Optional: Seed initial data
+            // await SeedData.Initialize(context);
+        }
+        catch (Exception ex)
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred creating the database.");
+            throw;
+        }
+    }
+
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "Lipometry API v1");
-        c.RoutePrefix = string.Empty; // Serve Swagger UI at root path
+        c.RoutePrefix = string.Empty;
     });
 }
+else
+{
+    // In production, ensure database exists without deleting
+    using (var scope = app.Services.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<LipometryContext>();
+        try
+        {
+            context.Database.EnsureCreated();
+        }
+        catch (Exception ex)
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred ensuring database exists.");
+            throw;
+        }
+    }
+}
 
+// Middleware order is important!
 app.UseHttpsRedirection();
+
+// This now works because we called builder.Services.AddAuthorization()
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();

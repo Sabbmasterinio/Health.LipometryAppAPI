@@ -7,20 +7,30 @@ namespace LipometryAppAPI.Data
     public class LipometryContext : DbContext
     {
         public DbSet<Person> People => Set<Person>();
-        public DbSet<Athlete> Athlete => Set<Athlete>();
+        public DbSet<Athlete> Athletes => Set<Athlete>();
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public LipometryContext(DbContextOptions<LipometryContext> options)
+            : base(options)
         {
-            optionsBuilder.UseSqlServer("Server=localhost;Database=LipometryDB;Trusted_Connection=True;TrustServerCertificate=True;");
-            //Not proper logging
-            optionsBuilder.LogTo(Console.WriteLine);
-            base.OnConfiguring(optionsBuilder);
         }
 
-        override protected void OnModelCreating(ModelBuilder modelBuilder)
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("Server=localhost;Database=LipometryDB;Trusted_Connection=True;TrustServerCertificate=True;");
+        //    //Not proper logging
+        //    optionsBuilder.LogTo(Console.WriteLine);
+        //    base.OnConfiguring(optionsBuilder);
+        //}
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new PersonMapping());
             modelBuilder.ApplyConfiguration(new AthleteMapping());
+            modelBuilder.Entity<Person>()
+                .ToTable("People")
+                .HasDiscriminator<string>("TypeDiscriminator")
+                .HasValue<Person>("Person")
+                .HasValue<Athlete>("Athlete");
         }
     }
 }

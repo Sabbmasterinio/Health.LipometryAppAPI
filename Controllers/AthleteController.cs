@@ -1,7 +1,6 @@
-﻿using LipometryAppAPI.Data;
-using LipometryAppAPI.Models;
+﻿using LipometryAppAPI.Models;
+using LipometryAppAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace LipometryAppAPI.Controllers
 {
@@ -9,11 +8,11 @@ namespace LipometryAppAPI.Controllers
     [Route("[controller]")]
     public class AthleteController : Controller
     {
-        private readonly LipometryContext _context;
+        private readonly IAthleteRepository _athleteRepository;
 
-        public AthleteController(LipometryContext context)
+        public AthleteController(IAthleteRepository athleteRepository)
         {
-            _context = context;
+            _athleteRepository = athleteRepository;
         }
 
         /// <summary>
@@ -23,7 +22,8 @@ namespace LipometryAppAPI.Controllers
         [ProducesResponseType(typeof(List<Athlete>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _context.Athlete.ToListAsync());
+            var athletes = await _athleteRepository.GetAllAsync();
+            return Ok(athletes);
         }
 
 
@@ -36,10 +36,8 @@ namespace LipometryAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
-            var person = await _context.Athlete
-                .SingleOrDefaultAsync(p => p.AthleteId == id);
-
-            return person is null ? NotFound() : Ok(person);
+            var athlete = await _athleteRepository.GetByIdAsync(id);
+            return athlete is null ? NotFound() : Ok(athlete);
         }
 
         /// <summary>
@@ -47,12 +45,14 @@ namespace LipometryAppAPI.Controllers
         /// </summary>
         /// <param name="athlete">The athletes</param>
         [HttpPost]
-        [ProducesResponseType(typeof(Person), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Athlete), StatusCodes.Status201Created)]
         public async Task<IActionResult> Create([FromBody] Athlete athlete)
         {
-            await _context.Athlete.AddAsync(athlete);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = athlete.AthleteId }, athlete);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var createdAthlete = await _athleteRepository.AddAsync(athlete);
+            return CreatedAtAction(nameof(Get), new { id = createdAthlete.PersonId }, createdAthlete);
         }
 
         /// <summary>
@@ -65,8 +65,7 @@ namespace LipometryAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] Athlete athlete)
         {
-            var existingAthlete = await _context.Athlete.FindAsync(id);
-
+            var existingAthlete = await _athleteRepository.GetByIdAsync(id);
             if (existingAthlete is null)
                 return NotFound();
 
@@ -77,8 +76,9 @@ namespace LipometryAppAPI.Controllers
             existingAthlete.WaistInCm = athlete.WaistInCm;
             existingAthlete.HipInCm = athlete.HipInCm;
             existingAthlete.NeckInCm = athlete.NeckInCm;
+            existingAthlete.Sport = athlete.Sport;
 
-            await _context.SaveChangesAsync();
+            await _athleteRepository.UpdateAsync(existingAthlete);
             return Ok(existingAthlete);
         }
 
@@ -91,13 +91,12 @@ namespace LipometryAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remove([FromRoute] int id)
         {
-            var existingAthlete = await _context.Athlete.FindAsync(id);
+            var existingAthlete = await _athleteRepository.GetByIdAsync(id);
 
             if (existingAthlete is null)
                 return NotFound();
 
-            _context.Athlete.Remove(existingAthlete);
-            await _context.SaveChangesAsync();
+            await _athleteRepository.DeleteAsync(id);
             return Ok();
         }
     }

@@ -1,5 +1,4 @@
-﻿// AthleteRepository.cs
-using LipometryAppAPI.Data;
+﻿using LipometryAppAPI.Data;
 using LipometryAppAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,17 +14,6 @@ namespace LipometryAppAPI.Repositories
         {
             return await _dbSet
                 .Where(a => a.Sport.ToLower() == sport.ToLower())
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Athlete>> GetAthletesWithBMIAboveAsync(double bmiThreshold)
-        {
-            return await _dbSet
-                .Where(a => a.WeightInKg.HasValue &&
-                           a.HeightInCm.HasValue &&
-                           a.HeightInCm.Value > 0)
-                .Where(a => (a.WeightInKg.Value /
-                           Math.Pow(a.HeightInCm.Value / 100, 2)) > bmiThreshold)
                 .ToListAsync();
         }
     }

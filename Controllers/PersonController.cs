@@ -79,7 +79,7 @@ namespace LipometryAppAPI.Controllers
             existingPerson.NeckInCm = person.NeckInCm;
 
             await _personRepository.UpdateAsync(existingPerson);
-            return NoContent();
+            return Ok(existingPerson);
 
         }
 
@@ -97,6 +97,14 @@ namespace LipometryAppAPI.Controllers
 
             await _personRepository.DeleteAsync(id);
             return Ok();
+        }
+
+        [HttpGet("gender/{gender}")]
+        [ProducesResponseType(typeof(List<Person>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByGender([FromRoute] PersonGender gender)
+        {
+            var people = await _personRepository.GetByGenderAsync(gender);
+            return Ok(people);
         }
     }
 }
