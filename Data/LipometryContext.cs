@@ -14,21 +14,16 @@ namespace LipometryAppAPI.Data
         {
         }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    optionsBuilder.UseSqlServer("Server=localhost;Database=LipometryDB;Trusted_Connection=True;TrustServerCertificate=True;");
-        //    //Not proper logging
-        //    optionsBuilder.LogTo(Console.WriteLine);
-        //    base.OnConfiguring(optionsBuilder);
-        //}
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.ApplyConfiguration(new PersonMapping());
             modelBuilder.ApplyConfiguration(new AthleteMapping());
+
             modelBuilder.Entity<Person>()
                 .ToTable("People")
-                .HasDiscriminator<string>("TypeDiscriminator")
+                .HasDiscriminator<string>("PersonType")
                 .HasValue<Person>("Person")
                 .HasValue<Athlete>("Athlete");
         }

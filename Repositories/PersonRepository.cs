@@ -10,19 +10,27 @@ namespace LipometryAppAPI.Repositories
         {
         }
 
+        /// <summary>
+        /// Asynchronously retrieves a collection of people who are 18 years of age or older.
+        /// </summary>
+        /// <remarks>This method queries the underlying data source to identify people whose date of
+        /// birth indicates they are at least 18 years old as of the current date.</remarks>
+        /// <returns>A task that represents the asynchronous operation. The task result contains an  IEnumerable{T} of Person
+        /// objects representing adults.</returns>
         public async Task<IEnumerable<Person>> GetAdultsAsync()
         {
+            var cutoffDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-18));
             return await _dbSet
-                .Where(p => p.Age >= 18)
+                .Where(p => p.DateOfBirth <= cutoffDate)
                 .ToListAsync();
         }
 
         /// <summary>
-        /// Retrieves a collection of persons filtered by the specified gender.
+        /// Retrieves a collection of people filtered by the specified gender.
         /// </summary>
-        /// <param name="gender">The gender to filter the persons by. Must be a valid <see cref="PersonGender"/> value.</param>
+        /// <param name="gender">The gender to filter the people by. Must be a valid <see cref="PersonGender"/> value.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="IEnumerable{T}"/> 
-        /// of <see cref="Person"/> objects matching the specified gender. Returns an empty collection if no persons
+        /// of <see cref="Person"/> objects matching the specified gender. Returns an empty collection if no people
         /// match the criteria.</returns>
         public async Task<IEnumerable<Person>> GetByGenderAsync(PersonGender gender)
         {
@@ -31,22 +39,6 @@ namespace LipometryAppAPI.Repositories
                 .ToListAsync();
         }
 
-        /// <summary>
-        /// Asynchronously retrieves a person from the database whose first and last names match the specified values.
-        /// </summary>
-        /// <remarks>This method performs a case-insensitive comparison of the first and last
-        /// names.</remarks>
-        /// <param name="firstName">The first name of the person to search for. This value is case-insensitive.</param>
-        /// <param name="lastName">The last name of the person to search for. This value is case-insensitive.</param>
-        /// <returns>A <see cref="Person"/> object representing the person with the specified first and last names,  or <see
-        /// langword="null"/> if no matching person is found.</returns>
-        public async Task<Person?> GetByFullNameAsync(string firstName, string lastName)
-        {
-            return await _dbSet
-                .FirstOrDefaultAsync(p =>
-                    p.FirstName.ToLower() == firstName.ToLower() &&
-                    p.LastName.ToLower() == lastName.ToLower());
-        }
 
         // Override base method
         public override async Task<IEnumerable<Person>> GetAllAsync()

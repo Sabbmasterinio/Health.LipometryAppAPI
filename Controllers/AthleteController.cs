@@ -99,5 +99,13 @@ namespace LipometryAppAPI.Controllers
             await _athleteRepository.DeleteAsync(id);
             return Ok();
         }
+
+        [HttpGet("bysport/{sport}")]
+        [ProducesResponseType(typeof(List<Athlete>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetBySport([FromRoute] string sport)
+        {
+            var athletes = await _athleteRepository.GetBySportAsync(sport);
+            return Ok(athletes);
+        }
     }
 }

@@ -106,5 +106,13 @@ namespace LipometryAppAPI.Controllers
             var people = await _personRepository.GetByGenderAsync(gender);
             return Ok(people);
         }
+
+        [HttpGet("adults")]
+        [ProducesResponseType(typeof(List<Person>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAdults()
+        {
+            var people = await _personRepository.GetAdultsAsync();
+            return Ok(people);
+        }
     }
 }

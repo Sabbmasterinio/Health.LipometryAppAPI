@@ -17,7 +17,8 @@
             {
                 var today = DateOnly.FromDateTime(DateTime.Today);
                 var age = today.Year - DateOfBirth.Year;
-                if (DateOfBirth > today.AddYears(-age)) age--;
+                if (DateOfBirth > today.AddYears(-age))
+                    age--;
                 return age;
             }
         }

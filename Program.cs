@@ -5,114 +5,79 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Load configuration
-builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-builder.Configuration.AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
-
-// Add services to the container
+// ------------------------------------
+// Configuration
+// ------------------------------------
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
+        // Serialize enums as strings
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
 
-// Configuring Swagger/OpenAPI
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
-    {
-        Title = "Lipometry API",
-        Version = "v1"
-    });
-});
+builder.Services.AddSwaggerGen();
 
-// Add authorization services
-builder.Services.AddAuthorization();
-
-// Get connection string
+// ------------------------------------
+// Database (EF Core)
+// ------------------------------------
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-if (string.IsNullOrEmpty(connectionString))
+
+if (string.IsNullOrWhiteSpace(connectionString))
 {
-    // Fallback for development
-    connectionString = "Server=localhost;Database=LipometryDB;Trusted_Connection=True;TrustServerCertificate=True;";
+    connectionString =
+        "Server=localhost;Database=LipometryDB;Trusted_Connection=True;TrustServerCertificate=True;";
 }
 
-// Add DbContext with configuration
 builder.Services.AddDbContext<LipometryContext>(options =>
 {
     options.UseSqlServer(connectionString);
 
-    // Enable sensitive data logging only in development
     if (builder.Environment.IsDevelopment())
     {
         options.EnableSensitiveDataLogging();
-        options.LogTo(Console.WriteLine, LogLevel.Information);
+        options.LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
     }
 });
 
-// Register repositories
+// ------------------------------------
+// Repositories
+// ------------------------------------
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IAthleteRepository, AthleteRepository>();
 
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
+// ------------------------------------
+// Development configuration
+// ------------------------------------
 if (app.Environment.IsDevelopment())
 {
-    // Database setup for development
-    using (var scope = app.Services.CreateScope())
-    {
-        var context = scope.ServiceProvider.GetRequiredService<LipometryContext>();
+    // Create DB if needed (no drop)
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<LipometryContext>();
+    context.Database.EnsureCreated();
 
-        try
-        {
-            // Delete and recreate for clean development (optional)
-            //context.Database.EnsureDeleted();
-
-            context.Database.EnsureCreated();
-
-            // Optional: Seed initial data
-            // await SeedData.Initialize(context);
-        }
-        catch (Exception ex)
-        {
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            logger.LogError(ex, "An error occurred creating the database.");
-            throw;
-        }
-    }
-
+    // Enable Swagger UI
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Lipometry API v1");
-        c.RoutePrefix = string.Empty;
-    });
+    app.UseSwaggerUI();
 }
 else
 {
-    // In production, ensure database exists without deleting
-    using (var scope = app.Services.CreateScope())
-    {
-        var context = scope.ServiceProvider.GetRequiredService<LipometryContext>();
-        try
-        {
-            context.Database.EnsureCreated();
-        }
-        catch (Exception ex)
-        {
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            logger.LogError(ex, "An error occurred ensuring database exists.");
-            throw;
-        }
-    }
+    // Production: ensure DB exists safely
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<LipometryContext>();
+    context.Database.EnsureCreated();
 }
 
-// Middleware order is important!
+// ------------------------------------
+// Middleware pipeline
+// ------------------------------------
 app.UseHttpsRedirection();
 
-// This now works because we called builder.Services.AddAuthorization()
 app.UseAuthorization();
 
 app.MapControllers();
