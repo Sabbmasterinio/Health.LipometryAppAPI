@@ -20,9 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Health.LipometryApp\Health.LipometryApp\Health.LipometryApp.csproj" />
-    <ProjectReference Include="..\Lipometry.Contracts\LipometryAppAPI.Contracts.csproj" />
-    <ProjectReference Include="..\LipometryAppAPI.Application\LipometryAppAPI.Application.csproj" />
+    <ProjectReference Include="..\LipometryAppAPI.Contracts\LipometryAppAPI.Contracts.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,7 +4,6 @@ using LipometryAppAPI.Contracts.Requests;
 using LipometryAppAPI.Contracts.Responses;
 using LipometryAppAPI.Models;
 using LipometryAppAPI.Repositories;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LipometryAppAPI.Controllers

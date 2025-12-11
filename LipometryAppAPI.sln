@@ -3,11 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.14.36623.8
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipometryAppAPI", "LipometryAppAPI.csproj", "{5E257920-910F-4C68-9DD1-F51321AB8D6C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipometryAppAPI", "LipometryAppAPI\LipometryAppAPI.csproj", "{88D889EA-F2B1-F72D-FA7D-C9546E10F748}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipometryAppAPI.Contracts", "..\Lipometry.Contracts\LipometryAppAPI.Contracts.csproj", "{B419B1D3-7C8D-42EA-9E12-C60FBBE0A788}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipometryAppAPI.Application", "..\LipometryAppAPI.Application\LipometryAppAPI.Application.csproj", "{CEDC4319-44FA-47FE-BA0C-C8CE43467794}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LipometryAppAPI.Contracts", "LipometryAppAPI.Contracts\LipometryAppAPI.Contracts.csproj", "{4616125D-87DD-4E47-042C-987A69EE6096}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5E257920-910F-4C68-9DD1-F51321AB8D6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E257920-910F-4C68-9DD1-F51321AB8D6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E257920-910F-4C68-9DD1-F51321AB8D6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E257920-910F-4C68-9DD1-F51321AB8D6C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B419B1D3-7C8D-42EA-9E12-C60FBBE0A788}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B419B1D3-7C8D-42EA-9E12-C60FBBE0A788}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B419B1D3-7C8D-42EA-9E12-C60FBBE0A788}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B419B1D3-7C8D-42EA-9E12-C60FBBE0A788}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CEDC4319-44FA-47FE-BA0C-C8CE43467794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CEDC4319-44FA-47FE-BA0C-C8CE43467794}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CEDC4319-44FA-47FE-BA0C-C8CE43467794}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CEDC4319-44FA-47FE-BA0C-C8CE43467794}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88D889EA-F2B1-F72D-FA7D-C9546E10F748}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88D889EA-F2B1-F72D-FA7D-C9546E10F748}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88D889EA-F2B1-F72D-FA7D-C9546E10F748}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88D889EA-F2B1-F72D-FA7D-C9546E10F748}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4616125D-87DD-4E47-042C-987A69EE6096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4616125D-87DD-4E47-042C-987A69EE6096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4616125D-87DD-4E47-042C-987A69EE6096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4616125D-87DD-4E47-042C-987A69EE6096}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

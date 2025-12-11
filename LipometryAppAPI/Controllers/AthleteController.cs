@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Health.LipometryApp.Services;
 using LipometryAppAPI.Contracts.Requests;
 using LipometryAppAPI.Contracts.Responses;
 using LipometryAppAPI.Models;
