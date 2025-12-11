@@ -1,4 +1,5 @@
-﻿using LipometryAppAPI.Data;
+﻿using LipometryAppAPI.Contracts;
+using LipometryAppAPI.Data;
 using LipometryAppAPI.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -45,9 +46,17 @@ namespace LipometryAppAPI.Repositories
         {
             return await _dbSet
                 .Where(p => p.GetType() == typeof(Person))
-                .OrderBy(p => p.LastName)
-                .ThenBy(p => p.FirstName)
                 .ToListAsync();
+        }
+
+        public override async Task<Person?> GetByIdAsync(int id)
+        {
+            var person = await _dbSet.FindAsync(id);
+            if (person != null && person.GetType() == typeof(Person))
+            {
+                return person;
+            }
+            return null;
         }
     }
 }

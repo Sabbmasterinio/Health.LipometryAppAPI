@@ -6,6 +6,10 @@
         {
             
         }
+
+        /// <summary>
+        /// The sport of the athlete.
+        /// </summary>
         public string Sport { get; set; } = string.Empty;
     }
 }

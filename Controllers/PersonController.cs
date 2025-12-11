@@ -1,8 +1,11 @@
-﻿using LipometryAppAPI.Data;
+﻿using AutoMapper;
+using LipometryAppAPI.Contracts;
+using LipometryAppAPI.Contracts.Requests;
+using LipometryAppAPI.Contracts.Responses;
 using LipometryAppAPI.Models;
 using LipometryAppAPI.Repositories;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace LipometryAppAPI.Controllers
 {
@@ -11,20 +14,25 @@ namespace LipometryAppAPI.Controllers
     public class PersonController : Controller
     {
         private readonly IPersonRepository _personRepository;
-        public PersonController(IPersonRepository personRepository)
+        private readonly IMapper _mapper;
+
+        public PersonController(IPersonRepository personRepository, IMapper mapper)
         {
             _personRepository = personRepository;
+            _mapper = mapper;
         }
+
 
         /// <summary>
         /// Get all people
         /// </summary>
         [HttpGet]
-        [ProducesResponseType(typeof(List<Person>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<PersonRead>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             var people = await _personRepository.GetAllAsync();
-            return Ok(people);
+            var result = _mapper.Map<List<PersonRead>>(people);
+            return Ok(result);
         }
 
 
@@ -33,12 +41,16 @@ namespace LipometryAppAPI.Controllers
         /// </summary>
         /// <param name="id">The id</param>
         [HttpGet("{id:int}")]
-        [ProducesResponseType(typeof(Person), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PersonRead), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get([FromRoute] int id)
         {
             var person = await _personRepository.GetByIdAsync(id);
-            return person is null ? NotFound() : Ok(person);
+            if (person is null)
+                return NotFound();
+
+            var result = _mapper.Map<PersonRead>(person);
+            return Ok(result);
         }
 
         /// <summary>
@@ -46,14 +58,16 @@ namespace LipometryAppAPI.Controllers
         /// </summary>
         /// <param name="person">The people</param>
         [HttpPost]
-        [ProducesResponseType(typeof(Person), StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create([FromBody] Person person)
+        [ProducesResponseType(typeof(PersonRead), StatusCodes.Status201Created)]
+        public async Task<IActionResult> Create([FromBody] PersonCreate model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdPerson = await _personRepository.AddAsync(person);
-            return CreatedAtAction(nameof(Get), new { id = createdPerson.PersonId }, createdPerson);
+            var createdPerson = await _personRepository.AddAsync(_mapper.Map<Person>(model));
+            var result = _mapper.Map<PersonRead>(createdPerson);
+
+            return CreatedAtAction(nameof(Get), new { id = createdPerson.PersonId }, result);
         }
 
         /// <summary>
@@ -62,25 +76,23 @@ namespace LipometryAppAPI.Controllers
         /// <param name="id">The id</param>
         /// <param name="person">The people</param>
         [HttpPut("{id:int}")]
-        [ProducesResponseType(typeof(Person), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PersonRead), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] Person person)
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] PersonUpdate model)
         {
-            var existingPerson = await _personRepository.GetByIdAsync(id);
-            if (existingPerson is null)
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var existing = await _personRepository.GetByIdAsync(id);
+            if (existing is null)
                 return NotFound();
 
-            existingPerson.FirstName = person.FirstName;
-            existingPerson.LastName = person.LastName;
-            existingPerson.HeightInCm = person.HeightInCm;
-            existingPerson.WeightInKg = person.WeightInKg;
-            existingPerson.WaistInCm = person.WaistInCm;
-            existingPerson.HipInCm = person.HipInCm;
-            existingPerson.NeckInCm = person.NeckInCm;
+            _mapper.Map(model, existing);
+            await _personRepository.UpdateAsync(existing);
 
-            await _personRepository.UpdateAsync(existingPerson);
-            return Ok(existingPerson);
+            var result = _mapper.Map<PersonRead>(existing);
 
+            return Ok(result);
         }
 
         /// <summary>
@@ -99,20 +111,24 @@ namespace LipometryAppAPI.Controllers
             return Ok();
         }
 
+        // GET by gender
         [HttpGet("gender/{gender}")]
-        [ProducesResponseType(typeof(List<Person>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetByGender([FromRoute] PersonGender gender)
+        [ProducesResponseType(typeof(List<PersonRead>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetByGender(PersonGender gender)
         {
             var people = await _personRepository.GetByGenderAsync(gender);
-            return Ok(people);
+            var result = _mapper.Map<List<PersonRead>>(people);
+            return Ok(result);
         }
 
+        // GET adults
         [HttpGet("adults")]
-        [ProducesResponseType(typeof(List<Person>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<PersonRead>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAdults()
         {
             var people = await _personRepository.GetAdultsAsync();
-            return Ok(people);
+            var result = _mapper.Map<List<PersonRead>>(people);
+            return Ok(result);
         }
     }
 }

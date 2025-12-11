@@ -1,4 +1,5 @@
-﻿using LipometryAppAPI.Models;
+﻿using LipometryAppAPI.Contracts;
+using LipometryAppAPI.Models;
 
 namespace LipometryAppAPI.Repositories
 {
