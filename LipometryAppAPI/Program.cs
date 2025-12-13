@@ -1,7 +1,7 @@
 using LipometryAppAPI.Data;
 using LipometryAppAPI.Repositories;
+using LipometryAppAPI.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,8 +46,11 @@ builder.Services.AddDbContext<LipometryContext>(options =>
 // ------------------------------------
 // Repositories
 // ------------------------------------
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IAthleteRepository, AthleteRepository>();
+builder.Services.AddScoped<IPersonService, PersonService>();
+builder.Services.AddScoped<IAthleteService, AthleteService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

@@ -7,10 +7,13 @@ namespace LipometryAppAPI.Repositories
 {
     public class PersonRepository : BaseRepository<Person>, IPersonRepository
     {
+        #region Constructors
         public PersonRepository(LipometryContext context) : base(context)
         {
         }
+        #endregion
 
+        #region Implementated methods of IPersonRepository
         /// <summary>
         /// Asynchronously retrieves a collection of people who are 18 years of age or older.
         /// </summary>
@@ -23,6 +26,7 @@ namespace LipometryAppAPI.Repositories
             var cutoffDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-18));
             return await _dbSet
                 .Where(p => p.DateOfBirth <= cutoffDate)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -37,15 +41,18 @@ namespace LipometryAppAPI.Repositories
         {
             return await _dbSet
                 .Where(p => p.PersonGender == gender)
+                .AsNoTracking()
                 .ToListAsync();
         }
+        #endregion
 
+        #region Overridden methods
 
-        // Override base method
         public override async Task<IEnumerable<Person>> GetAllAsync()
         {
             return await _dbSet
                 .Where(p => p.GetType() == typeof(Person))
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -58,5 +65,6 @@ namespace LipometryAppAPI.Repositories
             }
             return null;
         }
+        #endregion
     }
 }

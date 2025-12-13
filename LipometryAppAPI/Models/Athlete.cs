@@ -1,5 +1,10 @@
 ﻿namespace LipometryAppAPI.Models
 {
+    /// <summary>
+    /// Represents an individual who participates in a sport, including information about their specific discipline.
+    /// </summary>
+    /// <remarks>The <see cref="Athlete"/> class extends <see cref="Person"/> to provide additional details
+    /// relevant to sports participants, such as the sport they are associated with.</remarks>
     public class Athlete : Person
     {
         public Athlete()

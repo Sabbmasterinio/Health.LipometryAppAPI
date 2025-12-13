@@ -3,17 +3,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LipometryAppAPI.Repositories
 {
-    public abstract class BaseRepository<T> : IRepository<T> where T : class
+    public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
     {
+        #region Protected members
         protected readonly LipometryContext _context;
         protected readonly DbSet<T> _dbSet;
+        #endregion
 
+        #region Constructors
         protected BaseRepository(LipometryContext context)
         {
             _context = context;
             _dbSet = context.Set<T>();
         }
+        #endregion
 
+        #region Implemented methods of IRepository<T>
         public virtual async Task<T?> GetByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
@@ -21,20 +26,17 @@ namespace LipometryAppAPI.Repositories
 
         public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await _dbSet.ToListAsync();
+            return await _dbSet.AsNoTracking().ToListAsync();
         }
-
-        public virtual async Task<T> AddAsync(T entity)
+        
+        public virtual async Task CreateAsync(T entity)
         {
             await _dbSet.AddAsync(entity);
-            await _context.SaveChangesAsync();
-            return entity;
         }
 
-        public virtual async Task UpdateAsync(T entity)
+        public virtual void Update(T entity)
         {
             _dbSet.Update(entity);
-            await _context.SaveChangesAsync();
         }
 
         public virtual async Task DeleteAsync(int id)
@@ -46,10 +48,11 @@ namespace LipometryAppAPI.Repositories
                 await _context.SaveChangesAsync();
             }
         }
-
+        
         public virtual async Task<bool> ExistsAsync(int id)
         {
             return await _dbSet.FindAsync(id) != null;
         }
+        #endregion
     }
 }

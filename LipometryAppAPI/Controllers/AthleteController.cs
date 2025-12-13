@@ -3,27 +3,36 @@ using LipometryAppAPI.Contracts.Requests;
 using LipometryAppAPI.Contracts.Responses;
 using LipometryAppAPI.Models;
 using LipometryAppAPI.Repositories;
+using LipometryAppAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LipometryAppAPI.Controllers
 {
+    /// <summary>
+    /// Provides API endpoints for managing athlete resources, including retrieval, creation, updating, and deletion of
+    /// athlete data.
+    /// </summary>
+    /// <remarks>The <see cref="AthleteController"/> exposes RESTful endpoints for clients to interact with
+    /// athlete records. All endpoints require valid input data and return appropriate HTTP status codes based on the
+    /// operation outcome.</remarks>
     [ApiController]
-    [Route("[controller]")]
     public class AthleteController : Controller
     {
         private readonly IAthleteRepository _athleteRepository;
         private readonly IMapper _mapper;
+        private readonly IAthleteService _athleteService;
 
-        public AthleteController(IAthleteRepository athleteRepository, IMapper mapper)
+        public AthleteController(IAthleteRepository athleteRepository, IMapper mapper, IAthleteService athleteService)
         {
             _athleteRepository = athleteRepository;
             _mapper = mapper;
+            _athleteService = athleteService;
         }
 
         /// <summary>
         /// Get all athletes
         /// </summary>
-        [HttpGet]
+        [HttpGet(ApiEndpoints.Athlete.GetAll)]
         [ProducesResponseType(typeof(List<AthleteRead>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
@@ -32,12 +41,11 @@ namespace LipometryAppAPI.Controllers
             return Ok(result);
         }
 
-
         /// <summary>
         /// Get athlete by Id
         /// </summary>
         /// <param name="id">The id</param>
-        [HttpGet("{id:int}")]
+        [HttpGet(ApiEndpoints.Athlete.GetById)]
         [ProducesResponseType(typeof(AthleteRead), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get([FromRoute] int id)
@@ -54,14 +62,16 @@ namespace LipometryAppAPI.Controllers
         /// Create a new athlete
         /// </summary>
         /// <param name="athlete">The athletes</param>
-        [HttpPost]
+        [HttpPost(ApiEndpoints.Athlete.Create)]
         [ProducesResponseType(typeof(AthleteRead), StatusCodes.Status201Created)]
         public async Task<IActionResult> Create([FromBody] AthleteCreate model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdAthlete = await _athleteRepository.AddAsync(_mapper.Map<Athlete>(model));
+            var createdAthlete = await _athleteService.CreateAsync(model);
+            var result = _mapper.Map<PersonRead>(createdAthlete);
+            
             return CreatedAtAction(nameof(Get), new { id = createdAthlete.PersonId }, createdAthlete);
         }
 
@@ -70,7 +80,7 @@ namespace LipometryAppAPI.Controllers
         /// </summary>
         /// <param name="id">The id</param>
         /// <param name="athlete">The athletes</param>
-        [HttpPut("{id:int}")]
+        [HttpPut(ApiEndpoints.Athlete.Update)]
         [ProducesResponseType(typeof(AthleteRead), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AthleteUpdate model)
@@ -78,26 +88,18 @@ namespace LipometryAppAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var existing = await _athleteRepository.GetByIdAsync(id);
-            if (existing is null)
-                return NotFound();
+            var existing = await _athleteService.UpdateAsync(id, model);
 
-            // Apply the incoming update model to the existing entity
-            _mapper.Map(model, existing);
+            var result = _mapper.Map<PersonRead>(existing);
 
-            await _athleteRepository.UpdateAsync(existing);
-
-            // Convert updated entity back to output DTO
-            var readDto = _mapper.Map<PersonRead>(existing);
-
-            return Ok(readDto);
+            return Ok(result);
         }
 
         /// <summary>
         /// Remove an athlete by id
         /// </summary>
         /// <param name="id">The id</param>
-        [HttpDelete("{id:int}")]
+        [HttpDelete(ApiEndpoints.Athlete.Remove)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remove([FromRoute] int id)
@@ -111,7 +113,12 @@ namespace LipometryAppAPI.Controllers
             return Ok();
         }
 
-        [HttpGet("bysport/{sport}")]
+        /// <summary>
+        /// Get athletes by sport
+        /// </summary>
+        /// <param name="sport"></param>
+        /// <returns></returns>
+        [HttpGet(ApiEndpoints.Athlete.GetBySport)]
         [ProducesResponseType(typeof(List<AthleteRead>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetBySport([FromRoute] string sport)
         {

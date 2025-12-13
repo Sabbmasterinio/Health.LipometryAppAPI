@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace LipometryAppAPI.Contracts.Responses
+﻿namespace LipometryAppAPI.Contracts.Responses
 {
     public class PersonRead
     {

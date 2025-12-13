@@ -2,7 +2,7 @@
 
 namespace LipometryAppAPI.Repositories
 {
-    public interface IAthleteRepository : IRepository<Athlete>
+    public interface IAthleteRepository : IBaseRepository<Athlete>
     {
         Task<IEnumerable<Athlete>> GetBySportAsync(string sport);
     }

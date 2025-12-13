@@ -2,6 +2,11 @@
 
 namespace LipometryAppAPI.Models
 {
+    /// <summary>
+    /// Represents an individual including information about their specific discipline.
+    /// </summary>
+    /// <remarks>The <see cref="Person"/> class provides details about an individual, including attributes
+    /// such as height and weight.</remarks>
     public class Person
     {
         /// <summary>
