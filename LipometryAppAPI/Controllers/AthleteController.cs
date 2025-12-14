@@ -53,7 +53,8 @@ namespace LipometryAppAPI.Controllers
             var athlete = await _athleteRepository.GetByIdAsync(id);
             if (athlete is null)
                 return NotFound();
-
+            if(athlete.GetType() != typeof(Athlete))
+                throw new Exception($"this is not {athlete.GetType()} type");
             var result = _mapper.Map<PersonRead>(athlete);
             return Ok(result);
         }
@@ -104,12 +105,7 @@ namespace LipometryAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remove([FromRoute] int id)
         {
-            var existingAthlete = await _athleteRepository.GetByIdAsync(id);
-
-            if (existingAthlete is null)
-                return NotFound();
-
-            await _athleteRepository.DeleteAsync(id);
+            await _athleteService.RemoveAsync(id);
             return Ok();
         }
 

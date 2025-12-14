@@ -7,5 +7,6 @@ namespace LipometryAppAPI.Services
     {
         Task<Person> CreateAsync(PersonCreate createPerson);
         Task<Person> UpdateAsync(int id, PersonUpdate updatePerson);
+        Task RemoveAsync(int id);
     }
 }

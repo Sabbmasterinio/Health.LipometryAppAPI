@@ -34,5 +34,13 @@ namespace LipometryAppAPI.Services
             await _unitOfWork.SaveChangesAsync();
             return existingAthlete;
         }
+        public async Task RemoveAsync(int id)
+        {
+            var existingPerson = await _athleteRepository.GetByIdAsync(id)
+                ?? throw new Exception("Athlete not found");
+
+            await _athleteRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 }

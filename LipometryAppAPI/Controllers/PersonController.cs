@@ -109,10 +109,7 @@ namespace LipometryAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remove([FromRoute] int id)
         {
-            if (!await _personRepository.ExistsAsync(id))
-                return NotFound();
-
-            await _personRepository.DeleteAsync(id);
+            await _personService.RemoveAsync(id);
             return Ok();
         }
 

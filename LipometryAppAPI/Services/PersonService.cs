@@ -38,5 +38,13 @@ namespace LipometryAppAPI.Services
 
             return existingPerson;
         }
+        public async Task RemoveAsync(int id)
+        {
+            var existingPerson = await _personRepository.GetByIdAsync(id)
+                ?? throw new Exception("Person not found");
+
+            await _personRepository.RemoveAsync(id);
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 }

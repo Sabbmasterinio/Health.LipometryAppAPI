@@ -47,7 +47,6 @@ namespace LipometryAppAPI.Repositories
         #endregion
 
         #region Overridden methods
-
         public override async Task<IEnumerable<Person>> GetAllAsync()
         {
             return await _dbSet
