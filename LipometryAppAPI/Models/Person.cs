@@ -1,4 +1,5 @@
-﻿using LipometryAppAPI.Contracts;
+﻿using LipometryAppAPI.Contracts.Models;
+using LipometryAppAPI.Services;
 
 namespace LipometryAppAPI.Models
 {
@@ -12,7 +13,7 @@ namespace LipometryAppAPI.Models
         /// <summary>
         /// The id for the person
         /// </summary>
-        public int PersonId { get; init; }
+        public Guid PersonId { get; init; }
 
         /// <summary>
         /// The first name of the person
@@ -61,11 +62,7 @@ namespace LipometryAppAPI.Models
         {
             get
             {
-                var today = DateOnly.FromDateTime(DateTime.Today);
-                var age = today.Year - DateOfBirth.Year;
-                if (DateOfBirth > today.AddYears(-age))
-                    age--;
-                return age;
+                return Calculator.CalculateAge(DateOfBirth);
             }
         }
 

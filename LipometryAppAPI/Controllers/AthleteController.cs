@@ -48,7 +48,7 @@ namespace LipometryAppAPI.Controllers
         [HttpGet(ApiEndpoints.Athlete.GetById)]
         [ProducesResponseType(typeof(AthleteRead), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Get([FromRoute] int id)
+        public async Task<IActionResult> Get([FromRoute] Guid id)
         {
             var athlete = await _athleteRepository.GetByIdAsync(id);
             if (athlete is null)
@@ -84,7 +84,7 @@ namespace LipometryAppAPI.Controllers
         [HttpPut(ApiEndpoints.Athlete.Update)]
         [ProducesResponseType(typeof(AthleteRead), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] AthleteUpdate model)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] AthleteUpdate model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -103,7 +103,7 @@ namespace LipometryAppAPI.Controllers
         [HttpDelete(ApiEndpoints.Athlete.Remove)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Remove([FromRoute] int id)
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             await _athleteService.RemoveAsync(id);
             return Ok();

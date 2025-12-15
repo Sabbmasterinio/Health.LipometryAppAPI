@@ -26,7 +26,7 @@ namespace LipometryAppAPI.Services
             return _mapper.Map<Person>(createPerson);
         }
 
-        public async Task<Person> UpdateAsync(int id, PersonUpdate updatePerson)
+        public async Task<Person> UpdateAsync(Guid id, PersonUpdate updatePerson)
         {
             var existingPerson = await _personRepository.GetByIdAsync(id) 
                 ?? throw new Exception("Person not found");
@@ -38,7 +38,7 @@ namespace LipometryAppAPI.Services
 
             return existingPerson;
         }
-        public async Task RemoveAsync(int id)
+        public async Task RemoveAsync(Guid id)
         {
             var existingPerson = await _personRepository.GetByIdAsync(id)
                 ?? throw new Exception("Person not found");

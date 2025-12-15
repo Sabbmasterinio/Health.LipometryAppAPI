@@ -6,7 +6,7 @@ namespace LipometryAppAPI.Services
     public interface IAthleteService
     {
         Task<Athlete> CreateAsync(AthleteCreate createAthlete);
-        Task<Athlete> UpdateAsync(int id, AthleteUpdate updateAthlete);
-        Task RemoveAsync(int id);
+        Task<Athlete> UpdateAsync(Guid id, AthleteUpdate updateAthlete);
+        Task RemoveAsync(Guid id);
     }
 }

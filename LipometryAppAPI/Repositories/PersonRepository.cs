@@ -1,4 +1,4 @@
-﻿using LipometryAppAPI.Contracts;
+﻿using LipometryAppAPI.Contracts.Models;
 using LipometryAppAPI.Data;
 using LipometryAppAPI.Models;
 using Microsoft.EntityFrameworkCore;
@@ -55,7 +55,7 @@ namespace LipometryAppAPI.Repositories
                 .ToListAsync();
         }
 
-        public override async Task<Person?> GetByIdAsync(int id)
+        public override async Task<Person?> GetByIdAsync(Guid id)
         {
             var person = await _dbSet.FindAsync(id);
             if (person != null && person.GetType() == typeof(Person))

@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using LipometryAppAPI.Contracts;
+using LipometryAppAPI.Contracts.Models;
 using LipometryAppAPI.Contracts.Requests;
 using LipometryAppAPI.Contracts.Responses;
-using LipometryAppAPI.Models;
 using LipometryAppAPI.Repositories;
 using LipometryAppAPI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -53,7 +52,7 @@ namespace LipometryAppAPI.Controllers
         [HttpGet(ApiEndpoints.Person.GetById)]
         [ProducesResponseType(typeof(PersonRead), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Get([FromRoute] int id)
+        public async Task<IActionResult> Get([FromRoute] Guid id)
         {
             var person = await _personRepository.GetByIdAsync(id);
             if (person is null)
@@ -88,7 +87,7 @@ namespace LipometryAppAPI.Controllers
         [HttpPut(ApiEndpoints.Person.Update)]
         [ProducesResponseType(typeof(PersonRead), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] PersonUpdate model)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] PersonUpdate model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -107,7 +106,7 @@ namespace LipometryAppAPI.Controllers
         [HttpDelete(ApiEndpoints.Person.Remove)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Remove([FromRoute] int id)
+        public async Task<IActionResult> Remove([FromRoute] Guid id)
         {
             await _personService.RemoveAsync(id);
             return Ok();

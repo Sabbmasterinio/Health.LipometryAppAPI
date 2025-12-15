@@ -1,11 +1,13 @@
-﻿namespace LipometryAppAPI.Contracts.Responses
+﻿using LipometryAppAPI.Contracts.Models;
+
+namespace LipometryAppAPI.Contracts.Responses
 {
     public class PersonRead
     {
         /// <summary>
         /// The id for the person read DTO
         /// </summary>
-        public int PersonId { get; set; }
+        public Guid PersonId { get; set; }
 
         /// <summary>
         /// The first name of the person read DTO

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using LipometryAppAPI.Contracts.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace LipometryAppAPI.Contracts.Requests
 {
@@ -21,31 +22,31 @@ namespace LipometryAppAPI.Contracts.Requests
         /// <summary>
         /// The weight in Kg of the person update DTO
         /// </summary>
-        [Range(1, 500)]
+        [Range(10, 300)]
         public double? WeightInKg { get; set; }
 
         /// <summary>
         /// The height in cm of the person update DTO
         /// </summary>
-        [Range(30, 300)]
+        [Range(0.5, 2.5)]
         public double? HeightInCm { get; set; }
 
         /// <summary>
         /// The waist perimeter in cm of the person update DTO
         /// </summary>
-        [Range(1, 300)]
+        [Range(30, 200)]
         public double? WaistInCm { get; set; }
 
         /// <summary>
         /// The hip perimeter in cm of the person update DTO
         /// </summary>
-        [Range(1, 300)]
+        [Range(30, 200)]
         public double? HipInCm { get; set; }
 
         /// <summary>
         /// The neck perimeter in cm of the person update DTO
         /// </summary>
-        [Range(1, 300)]
+        [Range(25, 50)]
         public double? NeckInCm { get; set; }
 
         /// <summary>

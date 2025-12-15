@@ -6,7 +6,7 @@ namespace LipometryAppAPI.Services
     public interface IPersonService
     {
         Task<Person> CreateAsync(PersonCreate createPerson);
-        Task<Person> UpdateAsync(int id, PersonUpdate updatePerson);
-        Task RemoveAsync(int id);
+        Task<Person> UpdateAsync(Guid id, PersonUpdate updatePerson);
+        Task RemoveAsync(Guid id);
     }
 }

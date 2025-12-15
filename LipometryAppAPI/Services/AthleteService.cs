@@ -25,7 +25,7 @@ namespace LipometryAppAPI.Services
             return _mapper.Map<Athlete>(createAthlete);
         }
 
-        public async Task<Athlete> UpdateAsync(int id, AthleteUpdate updateAthlete)
+        public async Task<Athlete> UpdateAsync(Guid id, AthleteUpdate updateAthlete)
         {
             var existingAthlete = await _athleteRepository.GetByIdAsync(id) 
                 ?? throw new Exception("Athlete not found");
@@ -34,7 +34,7 @@ namespace LipometryAppAPI.Services
             await _unitOfWork.SaveChangesAsync();
             return existingAthlete;
         }
-        public async Task RemoveAsync(int id)
+        public async Task RemoveAsync(Guid id)
         {
             var existingPerson = await _athleteRepository.GetByIdAsync(id)
                 ?? throw new Exception("Athlete not found");

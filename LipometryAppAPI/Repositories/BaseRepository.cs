@@ -19,7 +19,7 @@ namespace LipometryAppAPI.Repositories
         #endregion
 
         #region Implemented methods of IRepository<T>
-        public virtual async Task<T?> GetByIdAsync(int id)
+        public virtual async Task<T?> GetByIdAsync(Guid id)
         {
             return await _dbSet.FindAsync(id);
         }
@@ -39,14 +39,14 @@ namespace LipometryAppAPI.Repositories
             _dbSet.Update(entity);
         }
 
-        public virtual async Task RemoveAsync(int id)
+        public virtual async Task RemoveAsync(Guid id)
         {
             var entity = await _dbSet.FindAsync(id);
             if (entity != null)
                 _dbSet.Remove(entity);
         }
         
-        public virtual async Task<bool> ExistsAsync(int id)
+        public virtual async Task<bool> ExistsAsync(Guid id)
         {
             return await _dbSet.FindAsync(id) != null;
         }
