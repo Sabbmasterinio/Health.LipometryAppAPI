@@ -4,6 +4,6 @@ namespace LipometryAppAPI.Repositories
 {
     public interface IAthleteRepository : IBaseRepository<Athlete>
     {
-        Task<IEnumerable<Athlete>> GetBySportAsync(string sport);
+        Task<IEnumerable<Athlete>> GetBySportAsync(string sport, CancellationToken token = default);
     }
 }

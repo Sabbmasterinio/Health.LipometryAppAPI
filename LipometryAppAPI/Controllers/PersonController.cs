@@ -38,9 +38,9 @@ namespace LipometryAppAPI.Controllers
         /// </summary>
         [HttpGet(ApiEndpoints.Person.BasePerson)]
         [ProducesResponseType(typeof(List<PersonRead>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(CancellationToken token)
         {
-            var people = await _personRepository.GetAllAsync();
+            var people = await _personRepository.GetAllAsync(token);
             var result = _mapper.Map<List<PersonRead>>(people);
             return Ok(result);
         }
@@ -52,9 +52,9 @@ namespace LipometryAppAPI.Controllers
         [HttpGet(ApiEndpoints.Person.GetById)]
         [ProducesResponseType(typeof(PersonRead), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Get([FromRoute] Guid id)
+        public async Task<IActionResult> Get([FromRoute] Guid id, CancellationToken token)
         {
-            var person = await _personRepository.GetByIdAsync(id);
+            var person = await _personRepository.GetByIdAsync(id, token);
             if (person is null)
                 return NotFound();
 
@@ -68,12 +68,12 @@ namespace LipometryAppAPI.Controllers
         /// <param name="person">The people</param>
         [HttpPost(ApiEndpoints.Person.Create)]
         [ProducesResponseType(typeof(PersonRead), StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create([FromBody] PersonCreate model)
+        public async Task<IActionResult> Create([FromBody] PersonCreate model, CancellationToken token)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdPerson = await _personService.CreateAsync(model);
+            var createdPerson = await _personService.CreateAsync(model, token);
             var result = _mapper.Map<PersonRead>(createdPerson);
 
             return CreatedAtAction(nameof(Get), new { id = createdPerson.PersonId }, result);
@@ -87,12 +87,12 @@ namespace LipometryAppAPI.Controllers
         [HttpPut(ApiEndpoints.Person.Update)]
         [ProducesResponseType(typeof(PersonRead), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] PersonUpdate model)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] PersonUpdate model, CancellationToken token)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var existing = await _personService.UpdateAsync(id, model);
+            var existing = await _personService.UpdateAsync(id, model, token);
 
             var result = _mapper.Map<PersonRead>(existing);
 
@@ -106,9 +106,9 @@ namespace LipometryAppAPI.Controllers
         [HttpDelete(ApiEndpoints.Person.Remove)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Remove([FromRoute] Guid id)
+        public async Task<IActionResult> Remove([FromRoute] Guid id, CancellationToken token)
         {
-            await _personService.RemoveAsync(id);
+            await _personService.RemoveAsync(id, token);
             return Ok();
         }
 
@@ -119,9 +119,9 @@ namespace LipometryAppAPI.Controllers
         /// <returns></returns>
         [HttpGet(ApiEndpoints.Person.GetByGender)]
         [ProducesResponseType(typeof(List<PersonRead>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetByGender(PersonGender gender)
+        public async Task<IActionResult> GetByGender(PersonGender gender, CancellationToken token)
         {
-            var people = await _personRepository.GetByGenderAsync(gender);
+            var people = await _personRepository.GetByGenderAsync(gender, token);
             var result = _mapper.Map<List<PersonRead>>(people);
             return Ok(result);
         }
@@ -132,9 +132,9 @@ namespace LipometryAppAPI.Controllers
         /// <returns></returns>
         [HttpGet(ApiEndpoints.Person.GetAdults)]
         [ProducesResponseType(typeof(List<PersonRead>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAdults()
+        public async Task<IActionResult> GetAdults(CancellationToken token)
         {
-            var people = await _personRepository.GetAdultsAsync();
+            var people = await _personRepository.GetAdultsAsync(token);
             var result = _mapper.Map<List<PersonRead>>(people);
             return Ok(result);
         }

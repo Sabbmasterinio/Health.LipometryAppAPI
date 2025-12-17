@@ -10,8 +10,8 @@ namespace LipometryAppAPI.Services
             _context = context;
         }
 
-        public Task<int> SaveChangesAsync()
-            => _context.SaveChangesAsync();
+        public Task<int> SaveChangesAsync(CancellationToken token = default)
+            => _context.SaveChangesAsync(token);
     }
     
 }

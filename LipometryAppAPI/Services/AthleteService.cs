@@ -18,29 +18,29 @@ namespace LipometryAppAPI.Services
             _mapper = mapper;
         }
 
-        public async Task<Athlete> CreateAsync(AthleteCreate createAthlete)
+        public async Task<Athlete> CreateAsync(AthleteCreate createAthlete, CancellationToken token = default)
         {
-            await _athleteRepository.CreateAsync(_mapper.Map<Athlete>(createAthlete));
-            await _unitOfWork.SaveChangesAsync();
+            await _athleteRepository.CreateAsync(_mapper.Map<Athlete>(createAthlete), token);
+            await _unitOfWork.SaveChangesAsync(token);
             return _mapper.Map<Athlete>(createAthlete);
         }
 
-        public async Task<Athlete> UpdateAsync(Guid id, AthleteUpdate updateAthlete)
+        public async Task<Athlete> UpdateAsync(Guid id, AthleteUpdate updateAthlete, CancellationToken token = default)
         {
-            var existingAthlete = await _athleteRepository.GetByIdAsync(id) 
+            var existingAthlete = await _athleteRepository.GetByIdAsync(id, token) 
                 ?? throw new Exception("Athlete not found");
             _mapper.Map(updateAthlete, existingAthlete);
-            _athleteRepository.Update(existingAthlete);
-            await _unitOfWork.SaveChangesAsync();
+            _athleteRepository.Update(existingAthlete, token);
+            await _unitOfWork.SaveChangesAsync(token);
             return existingAthlete;
         }
-        public async Task RemoveAsync(Guid id)
+        public async Task RemoveAsync(Guid id, CancellationToken token = default)
         {
-            var existingPerson = await _athleteRepository.GetByIdAsync(id)
+            var existingPerson = await _athleteRepository.GetByIdAsync(id, token)
                 ?? throw new Exception("Athlete not found");
 
-            await _athleteRepository.RemoveAsync(id);
-            await _unitOfWork.SaveChangesAsync();
+            await _athleteRepository.RemoveAsync(id, token);
+            await _unitOfWork.SaveChangesAsync(token);
         }
     }
 }

@@ -5,7 +5,7 @@ namespace LipometryAppAPI.Repositories
 {
     public interface IPersonRepository : IBaseRepository<Person>
     {
-        Task<IEnumerable<Person>> GetAdultsAsync();
-        Task<IEnumerable<Person>> GetByGenderAsync(PersonGender gender);
+        Task<IEnumerable<Person>> GetAdultsAsync(CancellationToken token = default);
+        Task<IEnumerable<Person>> GetByGenderAsync(PersonGender gender, CancellationToken token = default);
     }
 }

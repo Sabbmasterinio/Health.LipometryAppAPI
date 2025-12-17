@@ -13,12 +13,12 @@ namespace LipometryAppAPI.Repositories
         #endregion
 
         #region Implentated methods of IAthleteRepository
-        public async Task<IEnumerable<Athlete>> GetBySportAsync(string sport)
+        public async Task<IEnumerable<Athlete>> GetBySportAsync(string sport, CancellationToken token = default)
         {
             return await _dbSet
                 .Where(a => a.Sport.ToLower() == sport.ToLower())
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(token);
         }
         #endregion
     }

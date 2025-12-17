@@ -6,13 +6,13 @@
     public enum PersonGender
     {
         /// <summary>
-        /// The female gender
-        /// </summary>
-        Female,
-
-        /// <summary>
         /// The male gender
         /// </summary>
-        Male
+        Male,
+
+        /// <summary>
+        /// The female gender
+        /// </summary>
+        Female
     }
 }

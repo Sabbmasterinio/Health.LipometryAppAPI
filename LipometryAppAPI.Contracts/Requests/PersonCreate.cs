@@ -34,7 +34,7 @@ namespace LipometryAppAPI.Contracts.Requests
         /// <summary>
         /// The height in cm of the person create DTO
         /// </summary>
-        [Range(0.5, 2.5)]
+        [Range(50, 250)]
         public double? HeightInCm { get; set; }
 
         /// <summary>

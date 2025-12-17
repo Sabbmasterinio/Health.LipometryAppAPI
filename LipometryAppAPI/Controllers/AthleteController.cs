@@ -34,9 +34,9 @@ namespace LipometryAppAPI.Controllers
         /// </summary>
         [HttpGet(ApiEndpoints.Athlete.GetAll)]
         [ProducesResponseType(typeof(List<AthleteRead>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(CancellationToken token)
         {
-            var athletes = await _athleteRepository.GetAllAsync();
+            var athletes = await _athleteRepository.GetAllAsync(token);
             var result = _mapper.Map<List<AthleteRead>>(athletes);
             return Ok(result);
         }
@@ -48,9 +48,9 @@ namespace LipometryAppAPI.Controllers
         [HttpGet(ApiEndpoints.Athlete.GetById)]
         [ProducesResponseType(typeof(AthleteRead), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Get([FromRoute] Guid id)
+        public async Task<IActionResult> Get([FromRoute] Guid id, CancellationToken token)
         {
-            var athlete = await _athleteRepository.GetByIdAsync(id);
+            var athlete = await _athleteRepository.GetByIdAsync(id, token);
             if (athlete is null)
                 return NotFound();
             if(athlete.GetType() != typeof(Athlete))
@@ -65,12 +65,12 @@ namespace LipometryAppAPI.Controllers
         /// <param name="athlete">The athletes</param>
         [HttpPost(ApiEndpoints.Athlete.Create)]
         [ProducesResponseType(typeof(AthleteRead), StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create([FromBody] AthleteCreate model)
+        public async Task<IActionResult> Create([FromBody] AthleteCreate model, CancellationToken token)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var createdAthlete = await _athleteService.CreateAsync(model);
+            var createdAthlete = await _athleteService.CreateAsync(model, token);
             var result = _mapper.Map<PersonRead>(createdAthlete);
             
             return CreatedAtAction(nameof(Get), new { id = createdAthlete.PersonId }, createdAthlete);
@@ -84,12 +84,12 @@ namespace LipometryAppAPI.Controllers
         [HttpPut(ApiEndpoints.Athlete.Update)]
         [ProducesResponseType(typeof(AthleteRead), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] AthleteUpdate model)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] AthleteUpdate model, CancellationToken token)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var existing = await _athleteService.UpdateAsync(id, model);
+            var existing = await _athleteService.UpdateAsync(id, model, token);
 
             var result = _mapper.Map<PersonRead>(existing);
 
@@ -103,9 +103,9 @@ namespace LipometryAppAPI.Controllers
         [HttpDelete(ApiEndpoints.Athlete.Remove)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Remove([FromRoute] Guid id)
+        public async Task<IActionResult> Remove([FromRoute] Guid id, CancellationToken token)
         {
-            await _athleteService.RemoveAsync(id);
+            await _athleteService.RemoveAsync(id, token);
             return Ok();
         }
 
@@ -116,9 +116,9 @@ namespace LipometryAppAPI.Controllers
         /// <returns></returns>
         [HttpGet(ApiEndpoints.Athlete.GetBySport)]
         [ProducesResponseType(typeof(List<AthleteRead>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetBySport([FromRoute] string sport)
+        public async Task<IActionResult> GetBySport([FromRoute] string sport, CancellationToken token)
         {
-            var athletes = await _athleteRepository.GetBySportAsync(sport);
+            var athletes = await _athleteRepository.GetBySportAsync(sport, token);
             var result = _mapper.Map<List<AthleteRead>>(athletes);
             return Ok(result);
         }

@@ -48,7 +48,13 @@ namespace LipometryAppAPI.Services
         public static double CalculateBFP(double bmi, int age, PersonGender gender)
         {
             if (age <= 0) throw new ArgumentException("Age must be greater than zero.");
-            return (1.20 * bmi) + (0.23 * age) - (10.8 * (int)gender) - 5.4;
+
+            // Formula implementation for male 
+            if (gender == PersonGender.Male)
+                return (1.20 * bmi) + (0.23 * age) - (16.2);
+
+            // Formula implementation for female 
+            return (1.20 * bmi) + (0.23 * age) - 5.4;
         }
 
         /// <summary>
@@ -61,9 +67,11 @@ namespace LipometryAppAPI.Services
         /// <returns>Returns the Body Fat % (using U.S. Navy Formula).</returns>
         public static double CalculateBodyFat(double heightCm, double waistCm, double hipCm, double neckCm, PersonGender gender)
         {
+            // Formula implementation for male 
             if (gender == PersonGender.Male)
                 return 495 / (1.0324 - 0.19077 * Math.Log10(waistCm - neckCm) + 0.15456 * Math.Log10(heightCm)) - 450;
-            
+
+            // Formula implementation for female 
             return 495 / (1.29579 - 0.35004 * Math.Log10(waistCm + hipCm - neckCm) + 0.22100 * Math.Log10(heightCm)) - 450;
         }
         #endregion

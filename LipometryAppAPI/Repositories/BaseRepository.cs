@@ -19,36 +19,36 @@ namespace LipometryAppAPI.Repositories
         #endregion
 
         #region Implemented methods of IRepository<T>
-        public virtual async Task<T?> GetByIdAsync(Guid id)
+        public virtual async Task<T?> GetByIdAsync(Guid id, CancellationToken token = default)
         {
-            return await _dbSet.FindAsync(id);
+            return await _dbSet.FindAsync(id, token);
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync(CancellationToken token = default)
         {
-            return await _dbSet.AsNoTracking().ToListAsync();
+            return await _dbSet.AsNoTracking().ToListAsync(token);
         }
         
-        public virtual async Task CreateAsync(T entity)
+        public virtual async Task CreateAsync(T entity, CancellationToken token = default)
         {
-            await _dbSet.AddAsync(entity);
+            await _dbSet.AddAsync(entity, token);
         }
 
-        public virtual void Update(T entity)
+        public virtual void Update(T entity, CancellationToken token = default)
         {
             _dbSet.Update(entity);
         }
 
-        public virtual async Task RemoveAsync(Guid id)
+        public virtual async Task RemoveAsync(Guid id, CancellationToken token = default)
         {
-            var entity = await _dbSet.FindAsync(id);
+            var entity = await _dbSet.FindAsync(id, token);
             if (entity != null)
                 _dbSet.Remove(entity);
         }
         
-        public virtual async Task<bool> ExistsAsync(Guid id)
+        public virtual async Task<bool> ExistsAsync(Guid id, CancellationToken token = default)
         {
-            return await _dbSet.FindAsync(id) != null;
+            return await _dbSet.FindAsync(id, token) != null;
         }
         #endregion
     }

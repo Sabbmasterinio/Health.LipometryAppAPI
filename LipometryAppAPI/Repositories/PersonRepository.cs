@@ -21,13 +21,13 @@ namespace LipometryAppAPI.Repositories
         /// birth indicates they are at least 18 years old as of the current date.</remarks>
         /// <returns>A task that represents the asynchronous operation. The task result contains an  IEnumerable{T} of Person
         /// objects representing adults.</returns>
-        public async Task<IEnumerable<Person>> GetAdultsAsync()
+        public async Task<IEnumerable<Person>> GetAdultsAsync(CancellationToken token = default)
         {
             var cutoffDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-18));
             return await _dbSet
                 .Where(p => p.DateOfBirth <= cutoffDate)
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(token);
         }
 
         /// <summary>
@@ -37,27 +37,27 @@ namespace LipometryAppAPI.Repositories
         /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="IEnumerable{T}"/> 
         /// of <see cref="Person"/> objects matching the specified gender. Returns an empty collection if no people
         /// match the criteria.</returns>
-        public async Task<IEnumerable<Person>> GetByGenderAsync(PersonGender gender)
+        public async Task<IEnumerable<Person>> GetByGenderAsync(PersonGender gender, CancellationToken token = default)
         {
             return await _dbSet
                 .Where(p => p.PersonGender == gender)
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(token);
         }
         #endregion
 
         #region Overridden methods
-        public override async Task<IEnumerable<Person>> GetAllAsync()
+        public override async Task<IEnumerable<Person>> GetAllAsync(CancellationToken token = default)
         {
             return await _dbSet
                 .Where(p => p.GetType() == typeof(Person))
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(token);
         }
 
-        public override async Task<Person?> GetByIdAsync(Guid id)
+        public override async Task<Person?> GetByIdAsync(Guid id, CancellationToken token = default)
         {
-            var person = await _dbSet.FindAsync(id);
+            var person = await _dbSet.FindAsync(id, token);
             if (person != null && person.GetType() == typeof(Person))
             {
                 return person;
