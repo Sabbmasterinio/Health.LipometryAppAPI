@@ -33,11 +33,11 @@ namespace LipometryAppAPI.Controllers
         /// Get all athletes
         /// </summary>
         [HttpGet(ApiEndpoints.Athlete.GetAll)]
-        [ProducesResponseType(typeof(List<AthleteRead>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<AthleteReadResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll(CancellationToken token)
         {
             var athletes = await _athleteRepository.GetAllAsync(token);
-            var result = _mapper.Map<List<AthleteRead>>(athletes);
+            var result = _mapper.Map<List<AthleteReadResponse>>(athletes);
             return Ok(result);
         }
 
@@ -46,32 +46,28 @@ namespace LipometryAppAPI.Controllers
         /// </summary>
         /// <param name="id">The id</param>
         [HttpGet(ApiEndpoints.Athlete.GetById)]
-        [ProducesResponseType(typeof(AthleteRead), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AthleteReadResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Get([FromRoute] Guid id, CancellationToken token)
         {
             var athlete = await _athleteRepository.GetByIdAsync(id, token);
             if (athlete is null)
                 return NotFound();
-            if(athlete.GetType() != typeof(Athlete))
-                throw new Exception($"this is not {athlete.GetType()} type");
-            var result = _mapper.Map<PersonRead>(athlete);
+            
+            var result = _mapper.Map<AthleteReadResponse>(athlete);
             return Ok(result);
         }
 
         /// <summary>
         /// Create a new athlete
         /// </summary>
-        /// <param name="athlete">The athletes</param>
+        /// <param name="model">The athlete</param>
         [HttpPost(ApiEndpoints.Athlete.Create)]
-        [ProducesResponseType(typeof(AthleteRead), StatusCodes.Status201Created)]
-        public async Task<IActionResult> Create([FromBody] AthleteCreate model, CancellationToken token)
+        [ProducesResponseType(typeof(AthleteReadResponse), StatusCodes.Status201Created)]
+        public async Task<IActionResult> Create([FromBody] AthleteCreateRequest model, CancellationToken token)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var createdAthlete = await _athleteService.CreateAsync(model, token);
-            var result = _mapper.Map<PersonRead>(createdAthlete);
+            var result = _mapper.Map<AthleteReadResponse>(createdAthlete);
             
             return CreatedAtAction(nameof(Get), new { id = createdAthlete.PersonId }, createdAthlete);
         }
@@ -80,18 +76,18 @@ namespace LipometryAppAPI.Controllers
         /// Update an existing athlete
         /// </summary>
         /// <param name="id">The id</param>
-        /// <param name="athlete">The athletes</param>
+        /// <param name="model">The athlete</param>
         [HttpPut(ApiEndpoints.Athlete.Update)]
-        [ProducesResponseType(typeof(AthleteRead), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AthleteReadResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] AthleteUpdate model, CancellationToken token)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] AthleteUpdateRequest model, CancellationToken token)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var existing = await _athleteService.UpdateAsync(id, model, token);
 
-            var result = _mapper.Map<PersonRead>(existing);
+            if (existing is null)
+                return NotFound();
+
+            var result = _mapper.Map<AthleteReadResponse>(existing);
 
             return Ok(result);
         }
@@ -105,8 +101,11 @@ namespace LipometryAppAPI.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Remove([FromRoute] Guid id, CancellationToken token)
         {
-            await _athleteService.RemoveAsync(id, token);
-            return Ok();
+            var isRemoved = await _athleteService.RemoveAsync(id, token);
+
+            if (isRemoved)
+                return Ok();
+            return NotFound();
         }
 
         /// <summary>
@@ -115,11 +114,11 @@ namespace LipometryAppAPI.Controllers
         /// <param name="sport"></param>
         /// <returns></returns>
         [HttpGet(ApiEndpoints.Athlete.GetBySport)]
-        [ProducesResponseType(typeof(List<AthleteRead>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<AthleteReadResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetBySport([FromRoute] string sport, CancellationToken token)
         {
             var athletes = await _athleteRepository.GetBySportAsync(sport, token);
-            var result = _mapper.Map<List<AthleteRead>>(athletes);
+            var result = _mapper.Map<List<AthleteReadResponse>>(athletes);
             return Ok(result);
         }
     }

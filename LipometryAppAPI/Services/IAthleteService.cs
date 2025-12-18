@@ -5,8 +5,8 @@ namespace LipometryAppAPI.Services
 {
     public interface IAthleteService
     {
-        Task<Athlete> CreateAsync(AthleteCreate createAthlete, CancellationToken token = default);
-        Task<Athlete> UpdateAsync(Guid id, AthleteUpdate updateAthlete, CancellationToken token = default);
-        Task RemoveAsync(Guid id, CancellationToken token = default);
+        Task<Athlete> CreateAsync(AthleteCreateRequest createAthlete, CancellationToken token = default);
+        Task<Athlete> UpdateAsync(Guid id, AthleteUpdateRequest updateAthlete, CancellationToken token = default);
+        Task<bool> RemoveAsync(Guid id, CancellationToken token = default);
     }
 }

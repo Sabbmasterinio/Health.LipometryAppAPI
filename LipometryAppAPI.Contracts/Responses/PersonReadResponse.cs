@@ -2,7 +2,7 @@
 
 namespace LipometryAppAPI.Contracts.Responses
 {
-    public class PersonRead
+    public class PersonReadResponse
     {
         /// <summary>
         /// The id for the person read DTO

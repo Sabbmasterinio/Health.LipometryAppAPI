@@ -9,15 +9,15 @@ namespace LipometryAppAPI.Mapping
     {
         public MappingProfile()
         {
-            CreateMap<Person, PersonRead>();
-            CreateMap<PersonCreate, Person>();
-            CreateMap<PersonUpdate, Person>()
+            CreateMap<Person, PersonReadResponse>();
+            CreateMap<PersonCreateRequest, Person>();
+            CreateMap<PersonUpdateRequest, Person>()
                 .ForMember(dest => dest.PersonId, opt => opt.Ignore())
                 .ForMember(dest => dest.DateOfBirth, opt => opt.Ignore());
 
-            CreateMap<Athlete, AthleteRead>();
-            CreateMap<AthleteCreate, Athlete>();
-            CreateMap<AthleteUpdate, Athlete>()
+            CreateMap<Athlete, AthleteReadResponse>();
+            CreateMap<AthleteCreateRequest, Athlete>();
+            CreateMap<AthleteUpdateRequest, Athlete>()
                 .ForMember(dest => dest.PersonId, opt => opt.Ignore())
                 .ForMember(dest => dest.DateOfBirth, opt => opt.Ignore());
         }

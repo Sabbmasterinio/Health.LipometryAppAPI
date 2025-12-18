@@ -2,7 +2,7 @@
 
 namespace LipometryAppAPI.Contracts.Requests
 {
-    public class AthleteUpdate : PersonUpdate
+    public class AthleteUpdateRequest : PersonUpdateRequest
     {
         /// <summary>
         /// The sport of the athlete update DTO

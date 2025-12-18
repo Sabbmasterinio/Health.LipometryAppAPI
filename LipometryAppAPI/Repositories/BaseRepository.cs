@@ -39,11 +39,15 @@ namespace LipometryAppAPI.Repositories
             _dbSet.Update(entity);
         }
 
-        public virtual async Task RemoveAsync(Guid id, CancellationToken token = default)
+        public virtual async Task<bool> RemoveAsync(Guid id, CancellationToken token = default)
         {
             var entity = await _dbSet.FindAsync(id, token);
             if (entity != null)
+            {
                 _dbSet.Remove(entity);
+                return true;
+            }
+            return false;
         }
         
         public virtual async Task<bool> ExistsAsync(Guid id, CancellationToken token = default)

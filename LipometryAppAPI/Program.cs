@@ -1,3 +1,4 @@
+using LipometryAppAPI;
 using LipometryAppAPI.Data;
 using LipometryAppAPI.Repositories;
 using LipometryAppAPI.Services;
@@ -20,37 +21,41 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddApplication();
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDatabase(connectionString!);
+
 
 // ------------------------------------
 // Database (EF Core)
 // ------------------------------------
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-if (string.IsNullOrWhiteSpace(connectionString))
-{
-    connectionString =
-        "Server=localhost;Database=LipometryDB;Trusted_Connection=True;TrustServerCertificate=True;";
-}
+//if (string.IsNullOrWhiteSpace(connectionString))
+//{
+//    connectionString =
+//        "Server=localhost;Database=LipometryDB;Trusted_Connection=True;TrustServerCertificate=True;";
+//}
 
-builder.Services.AddDbContext<LipometryContext>(options =>
-{
-    options.UseSqlServer(connectionString);
+//builder.Services.AddDbContext<LipometryContext>(options =>
+//{
+//    options.UseSqlServer(connectionString);
 
-    if (builder.Environment.IsDevelopment())
-    {
-        options.EnableSensitiveDataLogging();
-        options.LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
-    }
-});
+//    if (builder.Environment.IsDevelopment())
+//    {
+//        options.EnableSensitiveDataLogging();
+//        options.LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
+//    }
+//});
 
 // ------------------------------------
 // Repositories
 // ------------------------------------
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<IPersonRepository, PersonRepository>();
-builder.Services.AddScoped<IAthleteRepository, AthleteRepository>();
-builder.Services.AddScoped<IPersonService, PersonService>();
-builder.Services.AddScoped<IAthleteService, AthleteService>();
+//builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+//builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+//builder.Services.AddScoped<IAthleteRepository, AthleteRepository>();
+//builder.Services.AddScoped<IPersonService, PersonService>();
+//builder.Services.AddScoped<IAthleteService, AthleteService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

@@ -3,7 +3,7 @@
     /// <summary>
     /// The athlete read DTO
     /// </summary>
-    public class AthleteRead : PersonRead
+    public class AthleteReadResponse : PersonReadResponse
     {
         /// <summary>
         /// The sport of the athlete read DTO

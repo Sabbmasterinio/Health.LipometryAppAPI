@@ -2,7 +2,7 @@
 
 namespace LipometryAppAPI.Contracts.Requests
 {
-    public class AthleteCreate : PersonCreate
+    public class AthleteCreateRequest : PersonCreateRequest
     {
         /// <summary>
         /// The sport of the athlete create DTO

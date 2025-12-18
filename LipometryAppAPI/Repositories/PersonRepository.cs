@@ -51,6 +51,8 @@ namespace LipometryAppAPI.Repositories
         {
             return await _dbSet
                 .Where(p => p.GetType() == typeof(Person))
+                .OrderBy(p => p.LastName)
+                .ThenBy(p=> p.FirstName)
                 .AsNoTracking()
                 .ToListAsync(token);
         }
