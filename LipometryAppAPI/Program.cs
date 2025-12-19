@@ -1,15 +1,53 @@
 using LipometryAppAPI;
 using LipometryAppAPI.Data;
+using LipometryAppAPI.Health;
 using LipometryAppAPI.Repositories;
 using LipometryAppAPI.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
+var config = builder.Configuration;
 
 // ------------------------------------
 // Configuration
 // ------------------------------------
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(config["Jwt:Key"]!)),
+        ValidateIssuerSigningKey = true,
+        ValidateLifetime = true,
+        ValidIssuer = config["Jwt:Issuer"],
+        ValidAudience = config["Jwt:Audience"],
+        ValidateIssuer = true,
+        ValidateAudience = true
+    };
+});
+
+builder.Services.AddAuthorization(x =>
+{
+    x.AddPolicy(AuthConstants.AdminUserPolicyName,
+        p => p.RequireClaim(AuthConstants.AdminUserClaimName, "true"));
+
+    x.AddPolicy(AuthConstants.TrustedMemberPolicyName,
+        p => p.RequireAssertion(c =>
+            c.User.HasClaim(m => m is { Type: AuthConstants.AdminUserClaimName, Value: "true" }) ||
+            c.User.HasClaim(m => m is { Type: AuthConstants.TrustedMemberClaimName, Value: "true" })));
+});
+
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
@@ -19,43 +57,42 @@ builder.Services.AddControllers()
 
 // Swagger
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Enter ONLY the JWT token (do not include 'Bearer ')"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
+}
+);
+
+builder.Services.AddHealthChecks().AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
+;
 
 builder.Services.AddApplication();
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = config.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDatabase(connectionString!);
-
-
-// ------------------------------------
-// Database (EF Core)
-// ------------------------------------
-
-//if (string.IsNullOrWhiteSpace(connectionString))
-//{
-//    connectionString =
-//        "Server=localhost;Database=LipometryDB;Trusted_Connection=True;TrustServerCertificate=True;";
-//}
-
-//builder.Services.AddDbContext<LipometryContext>(options =>
-//{
-//    options.UseSqlServer(connectionString);
-
-//    if (builder.Environment.IsDevelopment())
-//    {
-//        options.EnableSensitiveDataLogging();
-//        options.LogTo(Console.WriteLine, Microsoft.Extensions.Logging.LogLevel.Information);
-//    }
-//});
-
-// ------------------------------------
-// Repositories
-// ------------------------------------
-//builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-//builder.Services.AddScoped<IPersonRepository, PersonRepository>();
-//builder.Services.AddScoped<IAthleteRepository, AthleteRepository>();
-//builder.Services.AddScoped<IPersonService, PersonService>();
-//builder.Services.AddScoped<IAthleteService, AthleteService>();
 
 builder.Services.AddAuthorization();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -87,8 +124,11 @@ else
 // ------------------------------------
 // Middleware pipeline
 // ------------------------------------
+app.MapHealthChecks("_health");
+
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

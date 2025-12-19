@@ -4,6 +4,7 @@ using LipometryAppAPI.Contracts.Responses;
 using LipometryAppAPI.Models;
 using LipometryAppAPI.Repositories;
 using LipometryAppAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LipometryAppAPI.Controllers
@@ -64,6 +65,7 @@ namespace LipometryAppAPI.Controllers
         /// <param name="model">The athlete</param>
         [HttpPost(ApiEndpoints.Athlete.Create)]
         [ProducesResponseType(typeof(AthleteReadResponse), StatusCodes.Status201Created)]
+        [Authorize(AuthConstants.TrustedMemberPolicyName)]
         public async Task<IActionResult> Create([FromBody] AthleteCreateRequest model, CancellationToken token)
         {
             var createdAthlete = await _athleteService.CreateAsync(model, token);
@@ -80,6 +82,7 @@ namespace LipometryAppAPI.Controllers
         [HttpPut(ApiEndpoints.Athlete.Update)]
         [ProducesResponseType(typeof(AthleteReadResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(AuthConstants.TrustedMemberPolicyName)]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] AthleteUpdateRequest model, CancellationToken token)
         {
             var existing = await _athleteService.UpdateAsync(id, model, token);
@@ -99,6 +102,7 @@ namespace LipometryAppAPI.Controllers
         [HttpDelete(ApiEndpoints.Athlete.Remove)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(AuthConstants.AdminUserPolicyName)]
         public async Task<IActionResult> Remove([FromRoute] Guid id, CancellationToken token)
         {
             var isRemoved = await _athleteService.RemoveAsync(id, token);
