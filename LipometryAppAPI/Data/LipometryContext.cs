@@ -6,14 +6,19 @@ namespace LipometryAppAPI.Data
 {
     public class LipometryContext : DbContext
     {
+        #region Public Members
         public DbSet<Person> People => Set<Person>();
         public DbSet<Athlete> Athletes => Set<Athlete>();
+        #endregion
 
+        #region Constructors
         public LipometryContext(DbContextOptions<LipometryContext> options)
             : base(options)
         {
         }
+        #endregion
 
+        #region Overriden Methods of DbContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -27,5 +32,6 @@ namespace LipometryAppAPI.Data
                 .HasValue<Person>("Person")
                 .HasValue<Athlete>("Athlete");
         }
+        #endregion
     }
 }

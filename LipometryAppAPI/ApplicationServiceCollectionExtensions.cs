@@ -1,4 +1,5 @@
 ﻿using LipometryAppAPI.Data;
+using LipometryAppAPI.Database;
 using LipometryAppAPI.Repositories;
 using LipometryAppAPI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ namespace LipometryAppAPI
             services.AddScoped<IAthleteRepository, AthleteRepository>();
             services.AddScoped<IPersonService, PersonService>();
             services.AddScoped<IAthleteService, AthleteService>();
+            services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
 
             return services;
         }

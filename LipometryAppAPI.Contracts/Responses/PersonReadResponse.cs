@@ -4,6 +4,7 @@ namespace LipometryAppAPI.Contracts.Responses
 {
     public class PersonReadResponse
     {
+        #region Public Methods
         /// <summary>
         /// The id for the person read DTO
         /// </summary>
@@ -58,5 +59,6 @@ namespace LipometryAppAPI.Contracts.Responses
         /// The gender of the person read DTO
         /// </summary>
         public PersonGender PersonGender { get; set; }
+        #endregion
     }
 }

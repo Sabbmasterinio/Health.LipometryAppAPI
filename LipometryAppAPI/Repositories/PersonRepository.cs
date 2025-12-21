@@ -13,7 +13,7 @@ namespace LipometryAppAPI.Repositories
         }
         #endregion
 
-        #region Implementated methods of IPersonRepository
+        #region Implemented Methods of IPersonRepository
         /// <summary>
         /// Asynchronously retrieves a collection of people who are 18 years of age or older.
         /// </summary>

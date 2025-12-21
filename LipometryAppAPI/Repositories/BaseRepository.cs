@@ -18,7 +18,7 @@ namespace LipometryAppAPI.Repositories
         }
         #endregion
 
-        #region Implemented methods of IRepository<T>
+        #region Implemented Methods of IRepository<T>
         public virtual async Task<T?> GetByIdAsync(Guid id, CancellationToken token = default)
         {
             return await _dbSet.FindAsync(id, token);

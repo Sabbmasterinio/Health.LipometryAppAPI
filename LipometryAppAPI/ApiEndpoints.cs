@@ -2,8 +2,11 @@
 {
     public static class ApiEndpoints
     {
+        #region Private Members
         private const string BasePath = "Lipometry";
+        #endregion
 
+        #region Endpoint string of Person
         public static class Person
         {
             public const string BasePerson = $"{BasePath}/Person";
@@ -15,7 +18,9 @@
             public const string GetByGender = $"{BasePerson}/gender/{{gender}}";
             public const string GetAdults = $"{BasePerson}/adults";
         }
+        #endregion
 
+        #region Endpoint string of Athlete
         public static class Athlete
         {
             public const string BaseAthlete = $"{BasePath}/Athlete";
@@ -26,5 +31,6 @@
             public const string Remove = $"{BaseAthlete}/{{id}}";
             public const string GetBySport = $"{BaseAthlete}/sport/{{sport}}";
         }
-    } 
+        #endregion
+    }
 }

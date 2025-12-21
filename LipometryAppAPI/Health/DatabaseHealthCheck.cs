@@ -1,38 +1,40 @@
-﻿using LipometryAppAPI.Data;
-using LipometryAppAPI.Database;
-using Microsoft.AspNetCore.Connections;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using LipometryAppAPI.Database;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Logging;
-using System.Data.Common;
 
 namespace LipometryAppAPI.Health
 {
     public class DatabaseHealthCheck : IHealthCheck
     {
+        #region Public Members
         public const string Name = "Database";
-        private readonly string _connectionString;
+        #endregion
 
-        public DatabaseHealthCheck(IConfiguration config)
+        #region Private Members
+        private readonly IDbConnectionFactory _connection;
+        #endregion
+
+        #region Constructors
+        public DatabaseHealthCheck(IDbConnectionFactory factory)
         {
-            _connectionString = config.GetConnectionString("DefaultConnection");
+            _connection = factory;
         }
+        #endregion
 
+        #region Implemented Methods of IHealthCheck
         public async Task<HealthCheckResult> CheckHealthAsync(
             HealthCheckContext context,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken = default)
         {
             try
             {
-                using var conn = new SqlConnection(_connectionString);
-                await conn.OpenAsync(cancellationToken);
+                using var connection = await _connection.CreateConnectionAsync(cancellationToken);
                 return HealthCheckResult.Healthy();
             }
             catch (Exception ex)
             {
-                return HealthCheckResult.Unhealthy("DB unreachable", ex);
+                return HealthCheckResult.Unhealthy("Database unavailable", ex);
             }
         }
+        #endregion
     }
 }

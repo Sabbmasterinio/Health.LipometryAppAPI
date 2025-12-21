@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using LipometryAppAPI.Contracts.Requests;
 using LipometryAppAPI.Contracts.Responses;
-using LipometryAppAPI.Models;
 using LipometryAppAPI.Repositories;
 using LipometryAppAPI.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -17,19 +16,25 @@ namespace LipometryAppAPI.Controllers
     /// athlete records. All endpoints require valid input data and return appropriate HTTP status codes based on the
     /// operation outcome.</remarks>
     [ApiController]
+    [Authorize]
     public class AthleteController : Controller
     {
+        #region Private Members
         private readonly IAthleteRepository _athleteRepository;
         private readonly IMapper _mapper;
         private readonly IAthleteService _athleteService;
+        #endregion
 
+        #region Constructors
         public AthleteController(IAthleteRepository athleteRepository, IMapper mapper, IAthleteService athleteService)
         {
             _athleteRepository = athleteRepository;
             _mapper = mapper;
             _athleteService = athleteService;
         }
+        #endregion
 
+        #region Endpoints
         /// <summary>
         /// Get all athletes
         /// </summary>
@@ -125,5 +130,6 @@ namespace LipometryAppAPI.Controllers
             var result = _mapper.Map<List<AthleteReadResponse>>(athletes);
             return Ok(result);
         }
+        #endregion
     }
 }

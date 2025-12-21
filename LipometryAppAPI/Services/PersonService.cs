@@ -8,18 +8,22 @@ namespace LipometryAppAPI.Services
 {
     public class PersonService : IPersonService
     {
+        #region Private Members
         private readonly IPersonRepository _personRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        #endregion
 
-
+        #region Constructors
         public PersonService(IPersonRepository personRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _personRepository = personRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+        #endregion
 
+        #region Implemented Methods of IPersonService
         public async Task<Person> CreateAsync(PersonCreateRequest createPerson, CancellationToken token = default)
         {
             await _personRepository.CreateAsync(_mapper.Map<Person>(createPerson), token);
@@ -49,5 +53,6 @@ namespace LipometryAppAPI.Services
             await _unitOfWork.SaveChangesAsync(token);
             return true;
         }
+        #endregion
     }
 }

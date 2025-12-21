@@ -5,6 +5,7 @@ namespace LipometryAppAPI.Contracts.Requests
 {
     public class PersonCreateRequest
     {
+        #region Public Methods
         /// <summary>
         /// The first name of the person create DTO
         /// </summary>
@@ -60,5 +61,6 @@ namespace LipometryAppAPI.Contracts.Requests
         /// </summary>
         [Required]
         public PersonGender PersonGender { get; set; }
+        #endregion
     }
 }

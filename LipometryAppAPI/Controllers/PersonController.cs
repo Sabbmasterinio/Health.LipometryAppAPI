@@ -21,19 +21,25 @@ namespace LipometryAppAPI.Controllers
     /// mapping between domain models and DTOs. </para> <para> All actions return appropriate HTTP status codes, such as
     /// 200 (OK), 201 (Created), or 404 (Not Found), depending on the outcome of the operation. </para></remarks>
     [ApiController]
+    [Authorize]
     public class PersonController : Controller
     {
+        #region Private Members
         private readonly IPersonRepository _personRepository;
         private readonly IMapper _mapper;
         private readonly IPersonService _personService;
+        #endregion
 
+        #region Constructors
         public PersonController(IPersonRepository personRepository, IMapper mapper, IPersonService personService)
         {
             _personRepository = personRepository;
             _mapper = mapper;
             _personService = personService;
         }
+        #endregion
 
+        #region Endpoints
         /// <summary>
         /// Get all people
         /// </summary>
@@ -142,5 +148,6 @@ namespace LipometryAppAPI.Controllers
             var result = _mapper.Map<List<PersonReadResponse>>(people);
             return Ok(result);
         }
+        #endregion
     }
 }

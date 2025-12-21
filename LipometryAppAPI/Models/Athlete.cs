@@ -7,14 +7,18 @@
     /// relevant to sports participants, such as the sport they are associated with.</remarks>
     public class Athlete : Person
     {
+        #region Constructors
         public Athlete()
         {
             
         }
+        #endregion
 
+        #region Public Members
         /// <summary>
         /// The sport of the athlete.
         /// </summary>
         public string Sport { get; set; } = string.Empty;
+        #endregion
     }
 }

@@ -10,6 +10,7 @@ namespace LipometryAppAPI.Models
     /// such as height and weight.</remarks>
     public class Person
     {
+        #region Public Members
         /// <summary>
         /// The id for the person
         /// </summary>
@@ -70,6 +71,6 @@ namespace LipometryAppAPI.Models
         /// The gender of the person
         /// </summary>
         public PersonGender PersonGender { get; init; } = PersonGender.Male;
-
+        #endregion
     }
 }

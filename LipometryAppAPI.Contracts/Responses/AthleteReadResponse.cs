@@ -5,9 +5,11 @@
     /// </summary>
     public class AthleteReadResponse : PersonReadResponse
     {
+        #region Public Methods
         /// <summary>
         /// The sport of the athlete read DTO
         /// </summary>
         public string Sport { get; set; } = string.Empty;
+        #endregion
     }
 }

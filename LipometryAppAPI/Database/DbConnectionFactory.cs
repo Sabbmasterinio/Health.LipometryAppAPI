@@ -1,28 +1,30 @@
-﻿using LipometryAppAPI.Data;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace LipometryAppAPI.Database
 {
-
-    public interface IDbConnectionFactory
-    {
-        Task<IDbConnection> CreateConnectionAsync(CancellationToken token = default);
-
-    }
     public class DbConnectionFactory : IDbConnectionFactory
     {
-        private readonly LipometryContext _context;
+        #region Private Members
+        private readonly string _connectionString;
+        #endregion
 
-
-        public DbConnectionFactory(LipometryContext context)
+        #region Constructors
+        public DbConnectionFactory(IConfiguration config)
         {
-            _context = context;
+            _connectionString = config.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("Connection string not found");
         }
+        #endregion
+
+        #region Implemented Methods of IDbConnectionFactory
         public async Task<IDbConnection> CreateConnectionAsync(CancellationToken token = default)
         {
-            await _context.Database.OpenConnectionAsync(token);
-            return _context.Database.GetDbConnection();
+            var connection = new SqlConnection(_connectionString);
+            await connection.OpenAsync(token);
+            return connection;
         }
+        #endregion
     }
 }

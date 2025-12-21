@@ -7,6 +7,7 @@ namespace LipometryAppAPI.Mapping
 {
     public class MappingProfile : Profile
     {
+        #region Constructors
         public MappingProfile()
         {
             CreateMap<Person, PersonReadResponse>();
@@ -21,5 +22,6 @@ namespace LipometryAppAPI.Mapping
                 .ForMember(dest => dest.PersonId, opt => opt.Ignore())
                 .ForMember(dest => dest.DateOfBirth, opt => opt.Ignore());
         }
+        #endregion
     }
 }

@@ -7,17 +7,22 @@ namespace LipometryAppAPI.Services
 {
     public class AthleteService : IAthleteService
     {
+        #region Private Members
         private readonly IAthleteRepository _athleteRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        #endregion
 
+        #region Constructors
         public AthleteService(IAthleteRepository athleteRepository, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _athleteRepository = athleteRepository;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+        #endregion
 
+        #region Implemented Methods
         public async Task<Athlete> CreateAsync(AthleteCreateRequest createAthlete, CancellationToken token = default)
         {
             await _athleteRepository.CreateAsync(_mapper.Map<Athlete>(createAthlete), token);
@@ -47,5 +52,6 @@ namespace LipometryAppAPI.Services
             await _unitOfWork.SaveChangesAsync(token);
             return true;
         }
+        #endregion
     }
 }
