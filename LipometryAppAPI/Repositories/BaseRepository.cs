@@ -1,5 +1,8 @@
-﻿using LipometryAppAPI.Data;
+﻿using LipometryAppAPI.Contracts.Models;
+using LipometryAppAPI.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace LipometryAppAPI.Repositories
 {
@@ -28,7 +31,34 @@ namespace LipometryAppAPI.Repositories
         {
             return await _dbSet.AsNoTracking().ToListAsync(token);
         }
-        
+
+        public virtual async Task<PagedResult<T>> GetPagedAsync(
+            int page,
+            int pageSize,
+            Expression<Func<T, bool>>? filter = null,
+            CancellationToken token= default)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (filter != null)
+                query = query.Where(filter);
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new PagedResult<T>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                Page = page,
+                PageSize = pageSize
+            };
+        }
+
         public virtual async Task CreateAsync(T entity, CancellationToken token = default)
         {
             await _dbSet.AddAsync(entity, token);

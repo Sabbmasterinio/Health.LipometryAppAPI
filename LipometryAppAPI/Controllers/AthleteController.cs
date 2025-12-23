@@ -16,7 +16,7 @@ namespace LipometryAppAPI.Controllers
     /// athlete records. All endpoints require valid input data and return appropriate HTTP status codes based on the
     /// operation outcome.</remarks>
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class AthleteController : Controller
     {
         #region Private Members
@@ -68,9 +68,9 @@ namespace LipometryAppAPI.Controllers
         /// Create a new athlete
         /// </summary>
         /// <param name="model">The athlete</param>
+        //[Authorize(AuthConstants.TrustedMemberPolicyName)]
         [HttpPost(ApiEndpoints.Athlete.Create)]
         [ProducesResponseType(typeof(AthleteReadResponse), StatusCodes.Status201Created)]
-        [Authorize(AuthConstants.TrustedMemberPolicyName)]
         public async Task<IActionResult> Create([FromBody] AthleteCreateRequest model, CancellationToken token)
         {
             var createdAthlete = await _athleteService.CreateAsync(model, token);
@@ -84,10 +84,10 @@ namespace LipometryAppAPI.Controllers
         /// </summary>
         /// <param name="id">The id</param>
         /// <param name="model">The athlete</param>
+        //[Authorize(AuthConstants.TrustedMemberPolicyName)]
         [HttpPut(ApiEndpoints.Athlete.Update)]
         [ProducesResponseType(typeof(AthleteReadResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Authorize(AuthConstants.TrustedMemberPolicyName)]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] AthleteUpdateRequest model, CancellationToken token)
         {
             var existing = await _athleteService.UpdateAsync(id, model, token);
@@ -104,10 +104,10 @@ namespace LipometryAppAPI.Controllers
         /// Remove an athlete by id
         /// </summary>
         /// <param name="id">The id</param>
+        //[Authorize(AuthConstants.AdminUserPolicyName)]
         [HttpDelete(ApiEndpoints.Athlete.Remove)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Authorize(AuthConstants.AdminUserPolicyName)]
         public async Task<IActionResult> Remove([FromRoute] Guid id, CancellationToken token)
         {
             var isRemoved = await _athleteService.RemoveAsync(id, token);

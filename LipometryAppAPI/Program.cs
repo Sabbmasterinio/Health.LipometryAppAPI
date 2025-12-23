@@ -32,7 +32,6 @@ builder.Services.AddAuthentication(x =>
         ValidateAudience = true
     };
 });
-
 builder.Services.AddAuthorization(x =>
 {
     x.AddPolicy(AuthConstants.AdminUserPolicyName,
@@ -50,7 +49,6 @@ builder.Services.AddControllers()
         // Serialize enums as strings
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
     });
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -81,13 +79,10 @@ builder.Services.AddSwaggerGen(options =>
 }
 );
 
-builder.Services.AddHealthChecks().AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
-
 builder.Services.AddApplication();
-
 builder.Services.AddDatabase(config["ConnectionStrings:DefaultConnection"]!);
-
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+builder.Services.AddHealthChecks().AddCheck<DatabaseHealthCheck>(DatabaseHealthCheck.Name);
 
 var app = builder.Build();
 
@@ -117,12 +112,9 @@ else
 // Middleware pipeline
 // ------------------------------------
 app.MapHealthChecks("_health");
-
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

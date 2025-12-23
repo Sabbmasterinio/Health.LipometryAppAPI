@@ -21,7 +21,6 @@ namespace LipometryAppAPI.Controllers
     /// mapping between domain models and DTOs. </para> <para> All actions return appropriate HTTP status codes, such as
     /// 200 (OK), 201 (Created), or 404 (Not Found), depending on the outcome of the operation. </para></remarks>
     [ApiController]
-    [Authorize]
     public class PersonController : Controller
     {
         #region Private Members
@@ -53,6 +52,29 @@ namespace LipometryAppAPI.Controllers
         }
 
         /// <summary>
+        /// Get people in a paged format
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="gender"></param>
+        /// <returns></returns>
+        [HttpGet(ApiEndpoints.Person.GetPaged)]
+        [ProducesResponseType(typeof(PagedResult<PersonReadResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPaged(
+            [FromQuery] PaginationParameters pagination,
+            [FromQuery] PersonGender? gender,
+            CancellationToken token)
+        {
+            var result = await _personRepository.GetPagedAsync(
+                pagination.Page,
+                pagination.PageSize,
+                gender.HasValue? p => p.PersonGender == gender.Value: null,
+                token
+            );
+
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Get person by Id
         /// </summary>
         /// <param name="id">The id</param>
@@ -73,9 +95,9 @@ namespace LipometryAppAPI.Controllers
         /// Create a new person
         /// </summary>
         /// <param name="person">The people</param>
+        //[Authorize(AuthConstants.TrustedMemberPolicyName)]
         [HttpPost(ApiEndpoints.Person.Create)]
         [ProducesResponseType(typeof(PersonReadResponse), StatusCodes.Status201Created)]
-        [Authorize(AuthConstants.TrustedMemberPolicyName)]
         public async Task<IActionResult> Create([FromBody] PersonCreateRequest model, CancellationToken token)
         {
             var createdPerson = await _personService.CreateAsync(model, token);
@@ -89,10 +111,10 @@ namespace LipometryAppAPI.Controllers
         /// </summary>
         /// <param name="id">The id</param>
         /// <param name="model">The person</param>
+        //[Authorize(AuthConstants.TrustedMemberPolicyName)]
         [HttpPut(ApiEndpoints.Person.Update)]
         [ProducesResponseType(typeof(PersonReadResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Authorize(AuthConstants.TrustedMemberPolicyName)]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] PersonUpdateRequest model, CancellationToken token)
         {
             var existing = await _personService.UpdateAsync(id, model, token);
@@ -109,10 +131,10 @@ namespace LipometryAppAPI.Controllers
         /// Remove a person by id
         /// </summary>
         /// <param name="id">The id</param>
+        //[Authorize(AuthConstants.AdminUserPolicyName)]
         [HttpDelete(ApiEndpoints.Person.Remove)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [Authorize(AuthConstants.AdminUserPolicyName)]
         public async Task<IActionResult> Remove([FromRoute] Guid id, CancellationToken token)
         {
             var isRemoved = await _personService.RemoveAsync(id, token);
