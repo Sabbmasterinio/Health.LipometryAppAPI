@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LipometryAppAPI.Contracts.Models;
 using LipometryAppAPI.Contracts.Requests;
 using LipometryAppAPI.Contracts.Responses;
 using LipometryAppAPI.Repositories;
@@ -44,6 +45,29 @@ namespace LipometryAppAPI.Controllers
         {
             var athletes = await _athleteRepository.GetAllAsync(token);
             var result = _mapper.Map<List<AthleteReadResponse>>(athletes);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Get athletes in a paged format
+        /// </summary>
+        /// <param name="pagination"></param>
+        /// <param name="gender"></param>
+        /// <returns></returns>
+        [HttpGet(ApiEndpoints.Athlete.GetPaged)]
+        [ProducesResponseType(typeof(PagedResult<AthleteReadResponse>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPaged(
+            [FromQuery] PaginationParameters pagination,
+            [FromQuery] PersonGender? gender,
+            CancellationToken token)
+        {
+            var result = await _athleteRepository.GetPagedAsync(
+                pagination.Page,
+                pagination.PageSize,
+                gender.HasValue ? p => p.PersonGender == gender.Value : null,
+                token
+            );
+
             return Ok(result);
         }
 

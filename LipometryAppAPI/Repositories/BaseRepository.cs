@@ -9,14 +9,12 @@ namespace LipometryAppAPI.Repositories
     public abstract class BaseRepository<T> : IBaseRepository<T> where T : class
     {
         #region Protected members
-        protected readonly LipometryContext _context;
         protected readonly DbSet<T> _dbSet;
         #endregion
 
         #region Constructors
         protected BaseRepository(LipometryContext context)
         {
-            _context = context;
             _dbSet = context.Set<T>();
         }
         #endregion
@@ -40,8 +38,11 @@ namespace LipometryAppAPI.Repositories
         {
             IQueryable<T> query = _dbSet;
 
+            query = query.Where(x => x.GetType() == typeof(T));
+
             if (filter != null)
                 query = query.Where(filter);
+
 
             var totalCount = await query.CountAsync();
 

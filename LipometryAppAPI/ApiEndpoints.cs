@@ -31,6 +31,7 @@
             public const string Update = $"{BaseAthlete}/{{id}}";
             public const string Remove = $"{BaseAthlete}/{{id}}";
             public const string GetBySport = $"{BaseAthlete}/sport/{{sport}}";
+            public const string GetPaged = $"{BaseAthlete}/paged";
         }
         #endregion
     }

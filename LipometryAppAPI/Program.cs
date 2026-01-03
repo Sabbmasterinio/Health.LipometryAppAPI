@@ -2,6 +2,7 @@ using LipometryAppAPI;
 using LipometryAppAPI.Data;
 using LipometryAppAPI.Health;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -94,7 +95,7 @@ if (app.Environment.IsDevelopment())
     // Create DB if needed (no drop)
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<LipometryContext>();
-    context.Database.EnsureCreated();
+    context.Database.Migrate();
 
     // Enable Swagger UI
     app.UseSwagger();
@@ -105,7 +106,7 @@ else
     // Production: ensure DB exists safely
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<LipometryContext>();
-    context.Database.EnsureCreated();
+    context.Database.Migrate();
 }
 
 // ------------------------------------

@@ -17,6 +17,16 @@ namespace LipometryAppAPI.Models
         public Guid PersonId { get; init; }
 
         /// <summary>
+        /// The phone number of the person
+        /// </summary>
+        public string? PhoneNumber { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The email address of the person
+        /// </summary>
+        public string? Email { get; set; } = string.Empty;
+
+        /// <summary>
         /// The first name of the person
         /// </summary>
         public string FirstName { get; set; } = string.Empty;
@@ -25,6 +35,17 @@ namespace LipometryAppAPI.Models
         /// The last name of the person
         /// </summary>
         public string LastName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The full name of the person
+        /// </summary>
+        public string FullName
+        {
+            get
+            {
+                return $"{FirstName} {LastName}";
+            }
+        }
 
         /// <summary>
         /// The date of birth of the person
