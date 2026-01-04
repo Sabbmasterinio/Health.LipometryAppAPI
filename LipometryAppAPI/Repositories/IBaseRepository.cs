@@ -7,6 +7,7 @@ namespace LipometryAppAPI.Repositories
     {
         Task<T?> GetByIdAsync(Guid id, CancellationToken token = default);
         Task<IEnumerable<T>> GetAllAsync(CancellationToken token = default);
+        Task<IEnumerable<T>> GetByAgeGroupAsync(AgeGroup ageGroup);
         Task<PagedResult<T>> GetPagedAsync(
            int page,
            int pageSize,

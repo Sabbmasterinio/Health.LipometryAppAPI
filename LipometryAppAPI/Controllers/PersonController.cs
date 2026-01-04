@@ -44,8 +44,11 @@ namespace LipometryAppAPI.Controllers
         /// </summary>
         [HttpGet(ApiEndpoints.Person.BasePerson)]
         [ProducesResponseType(typeof(List<PersonReadResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll(CancellationToken token)
+        public async Task<IActionResult> GetAll([FromQuery] AgeGroup? ageGroup, CancellationToken token)
         {
+            if (ageGroup is not null)
+                return Ok(await _personRepository.GetByAgeGroupAsync(ageGroup.Value));
+
             var people = await _personRepository.GetAllAsync(token);
             var result = _mapper.Map<List<PersonReadResponse>>(people);
             return Ok(result);
@@ -164,7 +167,7 @@ namespace LipometryAppAPI.Controllers
         /// <returns></returns>
         [HttpGet(ApiEndpoints.Person.GetAdults)]
         [ProducesResponseType(typeof(List<PersonReadResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAdults(CancellationToken token)
+        public async Task<IActionResult> GetAdults18Plus(CancellationToken token)
         {
             var people = await _personRepository.GetAdultsAsync(token);
             var result = _mapper.Map<List<PersonReadResponse>>(people);

@@ -20,6 +20,18 @@ namespace LipometryAppAPI.Contracts.Requests
         [StringLength(50)]
         public string LastName { get; set; } = string.Empty;
 
+        [StringLength(50)]
+        /// <summary>
+        /// The phone number of the person create DTO
+        /// </summary>
+        public string? PhoneNumber { get; set; } = string.Empty;
+
+        [StringLength(50)]
+        /// <summary>
+        /// The email address of the person create DTO
+        /// </summary>
+        public string? Email { get; set; } = string.Empty;
+
         /// <summary>
         /// The date of birth of the person create DTO
         /// </summary>

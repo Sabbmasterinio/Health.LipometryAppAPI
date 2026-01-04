@@ -21,6 +21,16 @@ namespace LipometryAppAPI.Contracts.Responses
         public string LastName { get; set; } = string.Empty;
 
         /// <summary>
+        /// The phone number of the person read DTO
+        /// </summary>
+        public string? PhoneNumber { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The email address of the person read DTO
+        /// </summary>
+        public string? Email { get; set; } = string.Empty;
+
+        /// <summary>
         /// The date of birth of the person read DTO
         /// </summary>
         public DateOnly DateOfBirth { get; set; }

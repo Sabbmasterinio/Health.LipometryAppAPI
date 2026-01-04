@@ -1,5 +1,12 @@
 ﻿namespace LipometryAppAPI.Contracts.Models
 {
+    /// <summary>
+    /// Specifies the age group categories used to classify individuals by age range.
+    /// </summary>
+    /// <remarks>The <see cref="AgeGroup"/> enumeration defines standard age groupings such as Child,
+    /// Teenager, YoungAdult, Adult, and Senior. These categories can be used for demographic segmentation, eligibility
+    /// checks, or other scenarios where age-based grouping is required. The specific age ranges for each group are
+    /// defined by the enumeration values.</remarks>
     public enum AgeGroup
     {
         /// <summary>

@@ -41,8 +41,11 @@ namespace LipometryAppAPI.Controllers
         /// </summary>
         [HttpGet(ApiEndpoints.Athlete.GetAll)]
         [ProducesResponseType(typeof(List<AthleteReadResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll(CancellationToken token)
+        public async Task<IActionResult> GetAll([FromQuery] AgeGroup? ageGroup, CancellationToken token)
         {
+            if (ageGroup is not null)
+                return Ok(await _athleteRepository.GetByAgeGroupAsync(ageGroup.Value));
+
             var athletes = await _athleteRepository.GetAllAsync(token);
             var result = _mapper.Map<List<AthleteReadResponse>>(athletes);
             return Ok(result);

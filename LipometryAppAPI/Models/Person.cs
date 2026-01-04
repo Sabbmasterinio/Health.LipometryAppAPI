@@ -8,7 +8,7 @@ namespace LipometryAppAPI.Models
     /// </summary>
     /// <remarks>The <see cref="Person"/> class provides details about an individual, including attributes
     /// such as height and weight.</remarks>
-    public class Person
+    public class Person : IHasDateOfBirth
     {
         #region Public Members
         /// <summary>
@@ -16,15 +16,6 @@ namespace LipometryAppAPI.Models
         /// </summary>
         public Guid PersonId { get; init; }
 
-        /// <summary>
-        /// The phone number of the person
-        /// </summary>
-        public string? PhoneNumber { get; set; } = string.Empty;
-
-        /// <summary>
-        /// The email address of the person
-        /// </summary>
-        public string? Email { get; set; } = string.Empty;
 
         /// <summary>
         /// The first name of the person
@@ -46,6 +37,16 @@ namespace LipometryAppAPI.Models
                 return $"{FirstName} {LastName}";
             }
         }
+        
+        /// <summary>
+        /// The phone number of the person
+        /// </summary>
+        public string? PhoneNumber { get; set; } = string.Empty;
+
+        /// <summary>
+        /// The email address of the person
+        /// </summary>
+        public string? Email { get; set; } = string.Empty;
 
         /// <summary>
         /// The date of birth of the person
