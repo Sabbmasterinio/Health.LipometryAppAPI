@@ -18,7 +18,6 @@
             public const string Remove = $"{BasePerson}/{{id}}";
             public const string GetByGender = $"{BasePerson}/gender/{{gender}}";
             public const string GetAdults = $"{BasePerson}/adults";
-            public const string GetNonAdults = $"{BasePerson}/underage";
         }
         #endregion
 

@@ -2,7 +2,6 @@
 using LipometryAppAPI.Data;
 using LipometryAppAPI.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace LipometryAppAPI.Repositories
@@ -44,7 +43,14 @@ namespace LipometryAppAPI.Repositories
             return await _dbSet.AsNoTracking().ToListAsync(token);
         }
 
-        public async Task<IEnumerable<T>> GetByAgeGroupAsync(AgeGroup ageGroup)
+        /// <summary>
+        /// Asynchronously retrieves all entities that fall within the specified age group of type <typeparamref name="T"/> from the data source.
+        /// </summary>
+        /// <param name="ageGroup"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public async Task<IEnumerable<T>> GetByAgeGroupAsync(AgeGroup ageGroup, CancellationToken token = default)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
 
@@ -66,7 +72,8 @@ namespace LipometryAppAPI.Repositories
             return await _dbSet
                 .Where(e => e.DateOfBirth <= maxDob &&
                             (max == null || e.DateOfBirth >= minDob))
-                .ToListAsync();
+                .AsNoTracking()
+                .ToListAsync(token);
         }
 
         /// <summary>

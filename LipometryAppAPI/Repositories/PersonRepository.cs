@@ -21,7 +21,7 @@ namespace LipometryAppAPI.Repositories
         /// birth indicates they are at least 18 years old as of the current date.</remarks>
         /// <returns>A task that represents the asynchronous operation. The task result contains an  IEnumerable{T} of Person
         /// objects representing adults.</returns>
-        public async Task<IEnumerable<Person>> GetAdultsAsync(CancellationToken token = default)
+        public async Task<IEnumerable<Person>> GetAdults18PlusAsync(CancellationToken token = default)
         {
             var cutoffDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-18));
             return await _dbSet
