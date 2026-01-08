@@ -8,7 +8,7 @@ namespace LipometryAppAPI.Models
     /// </summary>
     /// <remarks>The <see cref="Person"/> class provides details about an individual, including attributes
     /// such as height and weight.</remarks>
-    public class Person : IHasDateOfBirth
+    public class Person : IHasAttributes
     {
         #region Public Members
         /// <summary>
@@ -85,7 +85,7 @@ namespace LipometryAppAPI.Models
         {
             get
             {
-                return Calculator.CalculateAge(DateOfBirth);
+                return Calculator.CalculateAgeFromDob(DateOfBirth);
             }
         }
 

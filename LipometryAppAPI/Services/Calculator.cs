@@ -82,7 +82,7 @@ namespace LipometryAppAPI.Services
         /// </summary>
         /// <param name="dateOfBirth"></param>
         /// <returns>Returns the age.</returns>
-        public static int CalculateAge(DateOnly dateOfBirth)
+        public static int CalculateAgeFromDob(DateOnly dateOfBirth)
         {
             var today = DateOnly.FromDateTime(DateTime.Today);
             int age = today.Year - dateOfBirth.Year;
@@ -90,5 +90,7 @@ namespace LipometryAppAPI.Services
                 age--;
             return age;
         }
+
+
     }
 }

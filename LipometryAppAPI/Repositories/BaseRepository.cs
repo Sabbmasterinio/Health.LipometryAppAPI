@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace LipometryAppAPI.Repositories
 {
-    public abstract class BaseRepository<T> : IBaseRepository<T> where T : class , IHasDateOfBirth
+    public abstract class BaseRepository<T> : IBaseRepository<T> where T : class , IHasAttributes
     {
         #region Protected members
         protected readonly DbSet<T> _dbSet;
@@ -19,7 +19,7 @@ namespace LipometryAppAPI.Repositories
         }
         #endregion
 
-        #region Implemented Methods of IRepository<T>
+        #region Implemented Methods of IBaseRepository<T>
         /// <summary>
         /// Asynchronously retrieves an entity by its unique identifier.
         /// </summary>
@@ -76,6 +76,28 @@ namespace LipometryAppAPI.Repositories
                 .ToListAsync(token);
         }
 
+        public async Task<IEnumerable<T>> GetByAgeRangeAsync((int? minAge, int? maxAge) ageRange, CancellationToken token = default)
+        {
+            var minAge = ageRange.minAge ?? 4;
+            var maxAge = ageRange.maxAge ?? 120;
+
+            if (minAge < 0 || maxAge < 0 || minAge > maxAge)
+                return Enumerable.Empty<T>();
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
+
+
+            var maxDob = today.AddYears(-minAge);
+
+            var minDob = today.AddYears(-maxAge - 1).AddDays(1);
+
+            return await _dbSet
+                .Where(e => e.DateOfBirth >= minDob && e.DateOfBirth <= maxDob)
+                .AsNoTracking()
+                .ToListAsync(token);
+        }
+
+
         /// <summary>
         /// Asynchronously retrieves a paged subset of entities of type <typeparamref name="T"/> that match the
         /// specified filter criteria.
@@ -118,6 +140,37 @@ namespace LipometryAppAPI.Repositories
                 Page = page,
                 PageSize = pageSize
             };
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves a collection of people who are 18 years of age or older.
+        /// </summary>
+        /// <remarks>This method queries the underlying data source to identify people whose date of
+        /// birth indicates they are at least 18 years old as of the current date.</remarks>
+        /// <returns>A task that represents the asynchronous operation. The task result contains an  IEnumerable{T} of Person
+        /// objects representing adults.</returns>
+        public async Task<IEnumerable<T>> GetAdults18PlusAsync(CancellationToken token = default)
+        {
+            var cutoffDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-18));
+            return await _dbSet
+                .Where(p => p.DateOfBirth <= cutoffDate)
+                .AsNoTracking()
+                .ToListAsync(token);
+        }
+
+        /// <summary>
+        /// Retrieves a collection of people filtered by the specified gender.
+        /// </summary>
+        /// <param name="gender">The gender to filter the people by. Must be a valid <see cref="PersonGender"/> value.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains an <see cref="IEnumerable{T}"/> 
+        /// of <see cref="Person"/> objects matching the specified gender. Returns an empty collection if no people
+        /// match the criteria.</returns>
+        public async Task<IEnumerable<T>> GetByGenderAsync(PersonGender gender, CancellationToken token = default)
+        {
+            return await _dbSet
+                .Where(p => p.PersonGender == gender)
+                .AsNoTracking()
+                .ToListAsync(token);
         }
 
         /// <summary>
