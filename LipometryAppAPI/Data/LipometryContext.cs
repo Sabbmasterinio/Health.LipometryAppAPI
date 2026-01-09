@@ -9,6 +9,8 @@ namespace LipometryAppAPI.Data
         #region Public Members
         public DbSet<Person> People => Set<Person>();
         public DbSet<Athlete> Athletes => Set<Athlete>();
+        public DbSet<BodyMeasurement> PersonBodyMeasurements => Set<BodyMeasurement>();
+
         #endregion
 
         #region Constructors
@@ -31,6 +33,12 @@ namespace LipometryAppAPI.Data
                 .HasDiscriminator<string>("PersonType")
                 .HasValue<Person>("Person")
                 .HasValue<Athlete>("Athlete");
+
+            modelBuilder.Entity<BodyMeasurement>()
+            .HasOne(m => m.Person)
+            .WithMany(p => p.BodyMeasurements)
+            .HasForeignKey(m => m.PersonId)
+            .OnDelete(DeleteBehavior.Cascade);
         }
         #endregion
     }

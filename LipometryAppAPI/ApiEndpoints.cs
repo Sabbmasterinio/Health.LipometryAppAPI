@@ -18,6 +18,8 @@
             public const string Remove = $"{BasePerson}/{{id}}";
             public const string GetByGender = $"{BasePerson}/gender/{{gender}}";
             public const string GetAdults = $"{BasePerson}/adults";
+
+            public const string GetBodyMeasurementHistory = $"{BasePerson}/{{id}}/history";
         }
         #endregion
 
@@ -34,5 +36,10 @@
             public const string GetBySport = $"{BaseAthlete}/sport/{{sport}}";
         }
         #endregion
+
+        public static class BodyMeasurements
+        {
+            public const string Measurements = $"{BasePath}/BodyMeasurements";
+        }
     }
 }

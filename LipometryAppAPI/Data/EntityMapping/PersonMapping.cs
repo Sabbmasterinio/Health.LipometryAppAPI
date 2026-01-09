@@ -9,6 +9,10 @@ namespace LipometryAppAPI.Data.EntityMapping
         public void Configure(EntityTypeBuilder<Person> builder)
         {
             builder.HasKey(p => p.PersonId);
+
+            //builder
+            //    .HasOne(p => p.LatestBodyMeasurement)
+            //    .WithMany(m => m.People);
         }
     
     }

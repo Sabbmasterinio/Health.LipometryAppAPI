@@ -93,6 +93,8 @@ namespace LipometryAppAPI.Models
         /// The gender of the person
         /// </summary>
         public PersonGender PersonGender { get; init; } = PersonGender.Male;
+
+        public virtual ICollection<BodyMeasurement> BodyMeasurements { get; set; } = new List<BodyMeasurement>();        
         #endregion
     }
 }

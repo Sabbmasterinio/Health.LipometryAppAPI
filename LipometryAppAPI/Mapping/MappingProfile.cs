@@ -21,6 +21,15 @@ namespace LipometryAppAPI.Mapping
             CreateMap<AthleteUpdateRequest, Athlete>()
                 .ForMember(dest => dest.PersonId, opt => opt.Ignore())
                 .ForMember(dest => dest.DateOfBirth, opt => opt.Ignore());
+
+            CreateMap<BodyMeasurement, BodyMeasurementReadResponse>();
+            CreateMap<BodyMeasurementCreateRequest, BodyMeasurement>();
+
+            CreateMap<BodyMeasurementCreateRequest, Person>()
+                .ForMember(dest => dest.PersonId, opt => opt.Ignore())
+                .ForMember(dest => dest.FirstName, opt => opt.Ignore())
+                .ForMember(dest => dest.LastName, opt => opt.Ignore())
+                .ForMember(dest => dest.DateOfBirth, opt => opt.Ignore());
         }
         #endregion
     }
