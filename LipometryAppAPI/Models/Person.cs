@@ -56,27 +56,27 @@ namespace LipometryAppAPI.Models
         /// <summary>
         /// The weight in Kg of the person
         /// </summary>
-        public double? WeightInKg { get; set; } = 0.0;
+        public double? WeightInKg { get; set; }
 
         /// <summary>
         /// The Height in cm of the person
         /// </summary>
-        public double? HeightInCm { get; set; } = 0.0;
+        public double? HeightInCm { get; set; } 
 
         /// <summary>
         /// The waist perimeter in cm of the person
         /// </summary>
-        public double? WaistInCm { get; set; } = 0.0;
+        public double? WaistInCm { get; set; }
 
         /// <summary>
         /// The hip perimeter in cm of the person
         /// </summary>
-        public double? HipInCm { get; set; } = 0.0;
+        public double? HipInCm { get; set; }
 
         /// <summary>
         /// The neck perimeter in cm of the person
         /// </summary>
-        public double? NeckInCm { get; set; } = 0.0;
+        public double? NeckInCm { get; set; } 
 
         /// <summary>
         /// The age of the person

@@ -4,6 +4,7 @@ using LipometryAppAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LipometryAppAPI.Migrations
 {
     [DbContext(typeof(LipometryContext))]
-    partial class LipometryContextModelSnapshot : ModelSnapshot
+    [Migration("20260110183235_ChangeMeasurementDateToDateOnly")]
+    partial class ChangeMeasurementDateToDateOnly
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,6 +65,9 @@ namespace LipometryAppAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("BodyMeasurementMeasurementId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateOnly>("DateOfBirth")
                         .HasColumnType("date");
 
@@ -104,6 +110,8 @@ namespace LipometryAppAPI.Migrations
 
                     b.HasKey("PersonId");
 
+                    b.HasIndex("BodyMeasurementMeasurementId");
+
                     b.ToTable("People", (string)null);
 
                     b.HasDiscriminator<string>("PersonType").HasValue("Person");
@@ -131,6 +139,18 @@ namespace LipometryAppAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("LipometryAppAPI.Models.Person", b =>
+                {
+                    b.HasOne("LipometryAppAPI.Models.BodyMeasurement", null)
+                        .WithMany("People")
+                        .HasForeignKey("BodyMeasurementMeasurementId");
+                });
+
+            modelBuilder.Entity("LipometryAppAPI.Models.BodyMeasurement", b =>
+                {
+                    b.Navigation("People");
                 });
 
             modelBuilder.Entity("LipometryAppAPI.Models.Person", b =>

@@ -15,6 +15,8 @@ namespace LipometryAppAPI
             services.AddScoped<IAthleteRepository, AthleteRepository>();
             services.AddScoped<IPersonService, PersonService>();
             services.AddScoped<IAthleteService, AthleteService>();
+            services.AddScoped<IBodyMeasurementRepository, BodyMeasurementRepository>();
+            services.AddScoped<IBodyMeasurementService, BodyMeasurementService>();
             services.AddSingleton<IDbConnectionFactory, DbConnectionFactory>();
 
             return services;

@@ -13,7 +13,7 @@ namespace LipometryAppAPI.Contracts.Requests
         public Guid PersonId { get; set; }
 
         [Required]
-        public DateOnly DateRecorded { get; set; }
+        public DateTime MeasurementDate { get; set; }
 
         [Range(10, 300)]
         public double? WeightInKg { get; set; }

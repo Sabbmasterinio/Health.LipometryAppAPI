@@ -32,7 +32,7 @@ namespace LipometryAppAPI.Controllers
             if (personHistory is null)
                 return NotFound();
 
-            var result = _mapper.Map<List<PersonReadResponse>>(personHistory);
+            var result = _mapper.Map<List<BodyMeasurementReadResponse>>(personHistory);
             return Ok(result);
         }
 

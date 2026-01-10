@@ -50,6 +50,5 @@ namespace LipometryAppAPI.Models
         /// </summary>
         public double? NeckInCm { get; set; } = 0.0;
 
-        public ICollection<Person>? People { get; set; } = new HashSet<Person>();
     }
 }

@@ -9,7 +9,7 @@ namespace LipometryAppAPI.Contracts.Responses
     public class BodyMeasurementReadResponse
     {
         public Guid Id { get; set; }
-        public DateOnly DateRecorded { get; set; }
+        public DateTime MeasurementDate { get; set; }
         public double WeightInKg { get; set; }
         public double? HeightInCm { get; set; }
         public double? WaistInCm { get; set; }
