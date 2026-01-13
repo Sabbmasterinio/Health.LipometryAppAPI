@@ -1,6 +1,7 @@
 ﻿using LipometryAppAPI.Contracts.Models;
 using LipometryAppAPI.Data;
 using LipometryAppAPI.Models;
+using LipometryAppAPI.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -148,7 +149,21 @@ namespace LipometryAppAPI.Repositories
                 .ToListAsync(token);
         }
 
-        
+        public async Task<HealthStatus?> GetHealthStatusAsync(Guid id, CancellationToken token = default)
+        {
+            var person = await GetByIdAsync(id, token) 
+                ?? throw new KeyNotFoundException($"Person with ID {id} not found.");
+            if (person.WeightInKg != null && person.HeightInCm != null)
+            {
+                return Calculator.CalculateHealthStatus(
+                    Calculator.CalculateBMI(
+                        (double)person.WeightInKg,
+                        (double)person.HeightInCm)); ;
+            }
+            return null;
+        }
+
+
         #endregion
     }
 }

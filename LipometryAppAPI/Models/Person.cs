@@ -41,12 +41,12 @@ namespace LipometryAppAPI.Models
         /// <summary>
         /// The phone number of the person
         /// </summary>
-        public string? PhoneNumber { get; set; } = string.Empty;
+        public string? PhoneNumber { get; set; }
 
         /// <summary>
         /// The email address of the person
         /// </summary>
-        public string? Email { get; set; } = string.Empty;
+        public string? Email { get; set; }
 
         /// <summary>
         /// The date of birth of the person

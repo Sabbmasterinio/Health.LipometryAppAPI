@@ -20,6 +20,7 @@
             public const string GetAdults = $"{BasePerson}/adults";
 
             public const string GetBodyMeasurementHistory = $"{BasePerson}/{{id}}/history";
+            public const string GetHealthStatus = $"{BasePerson}/{{id}}/status";
         }
         #endregion
 

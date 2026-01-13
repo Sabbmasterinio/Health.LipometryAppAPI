@@ -185,6 +185,25 @@ namespace LipometryAppAPI.Controllers
             var result = _mapper.Map<List<PersonReadResponse>>(people);
             return Ok(result);
         }
+
+        /// <summary>
+        /// Get the health condition
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet(ApiEndpoints.Person.GetHealthStatus)]
+        [ProducesResponseType(typeof(HealthStatus), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetHealthStatus([FromRoute] Guid id, CancellationToken token)
+        {
+            var status = await _personRepository.GetHealthStatusAsync(id, token);
+
+            if(status is null)
+            {
+                return NotFound();
+            }
+            return Ok(status);
+        }
+
         #endregion
     }
 }

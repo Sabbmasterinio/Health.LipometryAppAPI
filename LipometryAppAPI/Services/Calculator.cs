@@ -91,6 +91,17 @@ namespace LipometryAppAPI.Services
             return age;
         }
 
+        public static HealthStatus CalculateHealthStatus(double bmi)
+        {
+            if (bmi < 18.5)
+                return HealthStatus.Underweight;
+            else if (bmi >= 18.5 && bmi <= 24.9)
+                return HealthStatus.Normal;
+            else if (bmi >= 25.0 && bmi <= 29.9)
+                return HealthStatus.Overweight;
+            else
+                return HealthStatus.Obese;
+        }
 
     }
 }

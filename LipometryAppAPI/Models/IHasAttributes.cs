@@ -6,5 +6,8 @@ namespace LipometryAppAPI.Models
     {
         DateOnly DateOfBirth { get; }
         PersonGender PersonGender { get; init; }
+        public double? WeightInKg { get; set; }
+        public double? HeightInCm { get; set; }
+
     }
 }

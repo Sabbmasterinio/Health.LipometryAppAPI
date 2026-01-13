@@ -3,11 +3,11 @@
     /// <summary>
     /// Specifies the health condition classification based on body weight relative to standard ranges.
     /// </summary>
-    /// <remarks>The <see cref="HealthCondition"/> enumeration represents common categories used to describe
+    /// <remarks>The <see cref="HealthStatus"/> enumeration represents common categories used to describe
     /// an individual's health status with respect to weight, such as underweight, normal, overweight, and obese. These
     /// categories are typically determined by metrics like Body Mass Index (BMI), but the specific criteria may vary
     /// depending on context or application.</remarks>
-    public enum HealthCondition
+    public enum HealthStatus
     {
         /// <summary>
         /// The underweight health condition
